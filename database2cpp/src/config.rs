@@ -1,9 +1,10 @@
 use serde::Deserialize;
 use std::fs;
+use std::io::{Error, ErrorKind};
 
 #[derive(Debug)]
 pub enum ConfigError {
-    Io(std::io::Error),
+    Io(Error),
     Json(serde_json::Error),
 }
 
@@ -30,8 +31,8 @@ pub struct ModelConfig {
     table_list: Vec<String>,
 }
 
-impl From<std::io::Error> for ConfigError {
-    fn from(e: std::io::Error) -> Self {
+impl From<Error> for ConfigError {
+    fn from(e: Error) -> Self {
         ConfigError::Io(e)
     }
 }
@@ -51,7 +52,19 @@ impl Config {
         &self.model
     }
 
-    pub fn load(json_file_path: &str) -> Result<Self, ConfigError> {
+    pub fn load() -> Result<Self, ConfigError> {
+        let args: Vec<String> = std::env::args().collect();
+        let json_file_path = match args.as_slice() {
+            [_] => "./conf.json",
+            [_, path] => path,
+            _ => {
+                return Err(ConfigError::Io(Error::new(
+                    ErrorKind::InvalidInput,
+                    "usage: app [config.json]"
+                )))
+            }
+        };
+
         let content = fs::read_to_string(json_file_path)?;
         let cfg: Config = serde_json::from_str(&content)?;
         Ok(cfg)
