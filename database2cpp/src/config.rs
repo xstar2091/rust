@@ -22,14 +22,15 @@ pub struct DatabaseConfig {
     username: String,
     password: String,
     database: String,
+    schema: String,
+    #[serde(rename = "table")]
+    table_list: Vec<String>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct ModelConfig {
     save_to_path: String,
     namespace: String,
-    #[serde(rename = "table")]
-    table_list: Vec<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -99,6 +100,14 @@ impl DatabaseConfig {
     pub fn database(&self) -> &str {
         &self.database
     }
+    
+    pub fn schema(&self) -> &str {
+        &self.schema
+    }
+    
+    pub fn table_list(&self) -> &[String] {
+        &self.table_list
+    }
 }
 
 impl ModelConfig {
@@ -108,10 +117,6 @@ impl ModelConfig {
 
     pub fn namespace(&self) -> &str {
         &self.namespace
-    }
-
-    pub fn table_list(&self) -> &[String] {
-        &self.table_list
     }
 }
 

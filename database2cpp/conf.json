@@ -4,15 +4,16 @@
         "port": 5432,
         "username": "postgres",
         "password": "CrCcSimclOUd.",
-        "database": "simcloud"
-    },
-    "model": {
-        "save_to_path": "./",
-        "namespace": "sim::utils",
+        "database": "simcloud",
+        "schema": "public",
         "table": [
             "sensor_list",
             "sensor_param"
         ]
+    },
+    "model": {
+        "save_to_path": "./",
+        "namespace": "sim::utils"
     },
     "formater": {
         "indent_char": " ",

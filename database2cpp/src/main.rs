@@ -1,8 +1,12 @@
+use tokio_postgres::Error;
 use crate::config::ConfigError;
+use crate::postgres::TableMetaRepo;
 
 mod config;
+mod postgres;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let cfg_result = config::Config::load();
     let cfg = match cfg_result {
         Ok(v) => v,
@@ -11,5 +15,24 @@ fn main() {
             ConfigError::Json(e) => {panic!("parse json failed: {}", e);}
         },
     };
-    println!("{:?}", cfg);
+    let dsn = format!("host={} port={} user={} password={} dbname={}",
+        cfg.database().host(), cfg.database().port(),
+        cfg.database().username(), cfg.database().password(),
+        cfg.database().database()
+    );
+    let repo_result = postgres::TableMetaRepo::new(&dsn).await;
+    let repo = match repo_result {
+        Ok(v) => v,
+        Err(e) => { panic!("connect to database failed: {}", e); }
+    };
+    for table_name in cfg.database().table_list() {
+        let cols_result = repo.get_columns(cfg.database().schema(), &table_name).await;
+        let cols = match cols_result {
+            Ok(v) => v,
+            Err(e) => { panic!("query columns from database failed: {}", e); }
+        };
+        for col in cols {
+            println!("{:?}", col)
+        }
+    }
 }
