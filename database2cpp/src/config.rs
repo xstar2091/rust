@@ -12,6 +12,7 @@ pub enum ConfigError {
 pub struct Config {
     database: DatabaseConfig,
     model: ModelConfig,
+    formater: FormaterConfig,
 }
 
 #[derive(Deserialize, Debug)]
@@ -29,6 +30,13 @@ pub struct ModelConfig {
     namespace: String,
     #[serde(rename = "table")]
     table_list: Vec<String>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct FormaterConfig {
+    indent_char: char,
+    indent_width: u8,
+    line_width: u16
 }
 
 impl From<Error> for ConfigError {
@@ -104,5 +112,19 @@ impl ModelConfig {
 
     pub fn table_list(&self) -> &[String] {
         &self.table_list
+    }
+}
+
+impl FormaterConfig {
+    pub fn indent_char(&self) -> char {
+        self.indent_char
+    }
+
+    pub fn indent_width(&self) -> u8 {
+        self.indent_width
+    }
+
+    pub fn line_width(&self) -> u16 {
+        self.line_width
     }
 }

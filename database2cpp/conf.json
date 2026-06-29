@@ -13,5 +13,10 @@
             "sensor_list",
             "sensor_param"
         ]
+    },
+    "formater": {
+        "indent_char": " ",
+        "indent_width": 4,
+        "line_width": 120
     }
 }
