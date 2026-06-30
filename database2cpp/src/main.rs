@@ -1,13 +1,11 @@
-use tokio_postgres::Error;
-use crate::config::ConfigError;
-use crate::postgres::TableMetaRepo;
-
-mod config;
-mod postgres;
+use database2cpp::config::Config;
+use database2cpp::config::ConfigError;
+use database2cpp::postgres;
+use database2cpp::generator;
 
 #[tokio::main]
 async fn main() {
-    let cfg_result = config::Config::load();
+    let cfg_result = Config::load();
     let cfg = match cfg_result {
         Ok(v) => v,
         Err(e) => match e {
@@ -32,7 +30,8 @@ async fn main() {
             Err(e) => { panic!("query columns from database failed: {}", e); }
         };
         for col in cols {
-            println!("{:?}", col)
+            println!("{:?}", col);
+            generator::CodeGenerator::test();
         }
     }
 }
