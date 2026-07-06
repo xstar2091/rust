@@ -1,3 +1,5 @@
+mod ch_10_template;
+
 use std::fmt::{Debug, Display};
 
 pub trait Summary {
