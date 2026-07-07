@@ -3,16 +3,4 @@ name = "trait_example"
 version = "0.1.0"
 edition = "2024"
 
-[[bin]]
-name="ch_10_template"
-path = "src/ch_10_template.rs"
-
-[[bin]]
-name="ch_10_trait"
-path = "src/ch_10_trait.rs"
-
-[[bin]]
-name="ch_10_lifetime"
-path = "src/ch_10_lifetime.rs"
-
 [dependencies]
