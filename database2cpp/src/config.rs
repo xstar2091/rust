@@ -12,11 +12,14 @@ pub enum ConfigError {
 pub struct Config {
     database: DatabaseConfig,
     model: ModelConfig,
+    json: String,
     formater: FormaterConfig,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct DatabaseConfig {
+    #[serde(rename = "type")]
+    typename: String,
     host: String,
     port: u16,
     username: String,
@@ -60,6 +63,14 @@ impl Config {
     pub fn model(&self) -> &ModelConfig {
         &self.model
     }
+    
+    pub fn json(&self) -> &str {
+        &self.json
+    }
+    
+    pub fn formater(&self) -> &FormaterConfig {
+        &self.formater
+    }
 
     pub fn load() -> Result<Self, ConfigError> {
         let args: Vec<String> = std::env::args().collect();
@@ -81,6 +92,10 @@ impl Config {
 }
 
 impl DatabaseConfig {
+    pub fn typename(&self) -> &str {
+        &self.typename
+    }
+
     pub fn host(&self) -> &str {
         &self.host
     }

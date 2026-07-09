@@ -1,5 +1,6 @@
 {
     "database": {
+        "type": "postgres",
         "host": "localhost",
         "port": 5432,
         "username": "postgres",
@@ -15,6 +16,7 @@
         "save_to_path": "./",
         "namespace": "sim::utils"
     },
+    "json": "nlohmann",
     "formater": {
         "indent_char": " ",
         "indent_width": 4,
