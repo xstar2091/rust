@@ -1,19 +1,19 @@
 use crate::config::{Config, FormaterConfig, ModelConfig};
-use crate::generator::generator_trait::JsonGenerator;
+use crate::generator::generator_trait::JsonHeaderGenerator;
 
-pub(crate) struct NlohmannJsonGenerator<'a> {
+pub(crate) struct NlohmannJsonHeaderGenerator<'a> {
     formater: &'a FormaterConfig,
     model: &'a ModelConfig,
 }
 
-impl<'a> NlohmannJsonGenerator<'a> {
+impl<'a> NlohmannJsonHeaderGenerator<'a> {
     pub fn new(config: &'a Config) -> Self {
-        NlohmannJsonGenerator {
+        NlohmannJsonHeaderGenerator {
             formater: &config.formater(),
             model: &config.model(),
         }
     }
 }
 
-impl<'a> JsonGenerator for NlohmannJsonGenerator<'a> {}
+impl<'a> JsonHeaderGenerator for NlohmannJsonHeaderGenerator<'a> {}
 

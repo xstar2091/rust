@@ -24,6 +24,14 @@ pub(crate) trait SourceGenerator {
     
 }
 
-pub(crate) trait JsonGenerator {
+pub(crate) trait JsonHeaderGenerator {
 
+}
+
+pub(crate) trait JsonSourceGenerator {
+
+}
+
+pub(crate) trait DatabaseCppTypeMapping {
+    fn database_to_cpp_mapping(&self, database_type: &str) -> &str;
 }
