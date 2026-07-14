@@ -2,14 +2,16 @@ use crate::config::Config;
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{DatabaseReader, HeaderGenerator};
 
-pub struct CodeGenerator {
+pub struct CodeGenerator<'a> {
     database_reader: Box<dyn DatabaseReader>,
+    header_generator: Box<dyn HeaderGenerator + 'a>,
 }
 
-impl CodeGenerator {
+impl<'a> CodeGenerator<'a> {
     pub async fn new(config: &Config) -> CodeGenerator {
         CodeGenerator {
-            database_reader: Factory::create_database_reader(config.database()).await
+            database_reader: Factory::create_database_reader(config.database()).await,
+            header_generator: Factory::create_header_generator(config),
         }
     }
     
