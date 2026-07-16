@@ -17,11 +17,11 @@ pub(crate) trait DatabaseReader {
 }
 
 pub(crate) trait HeaderGenerator {
-    
+    fn generate(&self, column_list: &[DatabaseColumnMeta]);
 }
 
 pub(crate) trait SourceGenerator {
-    
+    fn generate(&self, column_list: &[DatabaseColumnMeta]);
 }
 
 pub(crate) trait JsonHeaderGenerator {
