@@ -17,7 +17,7 @@ pub(crate) trait DatabaseReader {
 }
 
 pub(crate) trait HeaderGenerator {
-    fn generate(&self, column_list: &[DatabaseColumnMeta]);
+    fn generate(&mut self, table_name: &str, column_list: &[DatabaseColumnMeta]);
 }
 
 pub(crate) trait SourceGenerator {
@@ -25,7 +25,7 @@ pub(crate) trait SourceGenerator {
 }
 
 pub(crate) trait JsonHeaderGenerator {
-
+    fn create_include(&self, writer: &mut std::io::BufWriter<std::fs::File>);
 }
 
 pub(crate) trait JsonSourceGenerator {

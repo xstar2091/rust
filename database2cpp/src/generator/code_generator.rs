@@ -20,7 +20,7 @@ impl<'a> CodeGenerator<'a> {
     pub async fn generate(&mut self, config: &Config) {
         for table in config.database().table_list() {
             self.database_reader.read(config.database(), table).await;
-            self.header_generator.generate(self.database_reader.column_meta_list());
+            self.header_generator.generate(table, self.database_reader.column_meta_list());
             self.source_generator.generate(self.database_reader.column_meta_list());
         }
     }

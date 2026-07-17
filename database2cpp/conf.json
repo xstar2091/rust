@@ -13,8 +13,8 @@
         ]
     },
     "model": {
-        "save_to_path": "./",
-        "namespace": "sim::utils"
+        "save_to_path": ".",
+        "namespace": "simcloud::utils"
     },
     "json": "nlohmann",
     "formater": {

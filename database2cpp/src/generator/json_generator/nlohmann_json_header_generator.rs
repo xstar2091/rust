@@ -1,3 +1,4 @@
+use std::io::Write;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::generator_trait::JsonHeaderGenerator;
 
@@ -15,4 +16,8 @@ impl<'a> NlohmannJsonHeaderGenerator<'a> {
     }
 }
 
-impl<'a> JsonHeaderGenerator for NlohmannJsonHeaderGenerator<'a> {}
+impl<'a> JsonHeaderGenerator for NlohmannJsonHeaderGenerator<'a> {
+    fn create_include(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, "#include <nlohmann/json.hpp>").expect("write header file failed")
+    }
+}
