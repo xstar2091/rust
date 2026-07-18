@@ -25,6 +25,7 @@ impl PostgresToCppTypeMapping {
             ("time".to_string(), "std::string".to_string()),
             ("timestamp".to_string(), "std::string".to_string()),
             ("timestamptz".to_string(), "std::string".to_string()),
+            ("timestamp without time zone".to_string(), "std::string".to_string()),
             ("interval".to_string(), "std::string".to_string()),
             ("uuid".to_string(), "std::string".to_string()),
             ("json_generator".to_string(), "std::string".to_string()),

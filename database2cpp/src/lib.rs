@@ -5,6 +5,7 @@ pub mod generator {
     pub use code_generator::CodeGenerator;
 
     pub(crate) mod common_utils;
+    pub(crate) mod cpp_type_enum;
     pub(crate) mod factory;
     pub(crate) mod generator_trait;
     pub(crate) mod indent;

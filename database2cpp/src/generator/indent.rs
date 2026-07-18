@@ -1,14 +1,14 @@
 pub(crate) struct Indent {
-    _0: String,
-    _1: String,
-    _2: String,
-    _3: String,
-    _4: String,
-    _5: String,
-    _6: String,
-    _7: String,
-    _8: String,
-    indent: Vec<String>
+    pub(crate) _0: String,
+    pub(crate) _1: String,
+    pub(crate) _2: String,
+    pub(crate) _3: String,
+    pub(crate) _4: String,
+    pub(crate) _5: String,
+    pub(crate) _6: String,
+    pub(crate) _7: String,
+    pub(crate) _8: String,
+    pub(crate) indent: Vec<String>
 }
 
 impl Indent {
