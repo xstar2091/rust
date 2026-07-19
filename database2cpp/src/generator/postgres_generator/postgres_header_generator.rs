@@ -12,7 +12,8 @@ pub(crate) struct PostgresHeaderGenerator<'a> {
     indent : Indent,
     json_generator: Box<dyn JsonHeaderGenerator + 'a>,
     type_mapping: Box<dyn DatabaseCppTypeMapping>,
-    class_name: String,
+    row_class_name: String,
+    table_class_name: String,
     error_message: String,
 }
 
@@ -24,7 +25,8 @@ impl<'a> PostgresHeaderGenerator<'a> {
             indent: Indent::new(),
             json_generator: Factory::create_json_header_generator(config),
             type_mapping: Factory::create_database_to_cpp_type_mapping(config.database().typename()),
-            class_name: String::new(),
+            row_class_name: String::new(),
+            table_class_name: String::new(),
             error_message: String::from("write header file failed"),
         }
     }
@@ -49,7 +51,7 @@ namespace {}
 
 class {}
 {{
-"##, self.config_model.namespace(), self.class_name).expect(&self.error_message);
+"##, self.config_model.namespace(), self.row_class_name).expect(&self.error_message);
     }
 
     fn create_member(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
@@ -57,18 +59,22 @@ class {}
             let cpp_type_string = self.type_mapping.database_to_cpp_mapping(&column.data_type);
             let cpp_type = CppType::new(cpp_type_string);
             match cpp_type {
+                CppType::Bool => {
+                    writeln!(writer, "{}{} {}_ = false;",
+                             self.indent._1, cpp_type_string, column.column_name).expect(&self.error_message);
+                },
                 CppType::Integer => {
                     writeln!(writer, "{}{} {}_ = 0;",
                              self.indent._1, cpp_type_string, column.column_name).expect(&self.error_message);
-                }
+                },
                 CppType::Float => {
                     writeln!(writer, "{}{} {}_ = 0.0;",
                              self.indent._1, cpp_type_string, column.column_name).expect(&self.error_message);
-                }
+                },
                 CppType::String => {
                     writeln!(writer, "{}{} {}_;",
                              self.indent._1, cpp_type_string, column.column_name).expect(&self.error_message);
-                }
+                },
             }
         }
         writeln!(writer, "").expect(&self.error_message);
@@ -90,7 +96,7 @@ class {}
 {0}{1}& operator=(const {1}&) = default;
 {0}{1}& operator=({1}&&) noexcept = default;
 {0}~{1}() = default;
-"##, self.indent._1, self.class_name).expect(&self.error_message);
+"##, self.indent._1, self.row_class_name).expect(&self.error_message);
     }
 
     fn create_column_struct(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
@@ -122,6 +128,138 @@ class {}
         writeln!(writer, "{}static constexpr int total_count = index_total_count;", self.indent._2).expect(&self.error_message);
         writeln!(writer, "{}}};", self.indent._1).expect(&self.error_message);
     }
+
+    fn create_getter(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
+        for column in column_list {
+            let cpp_type_string = self.type_mapping.database_to_cpp_mapping(&column.data_type);
+            let cpp_type = CppType::new(cpp_type_string);
+            match cpp_type {
+                CppType::String => {
+                    writeln!(writer, "{}[[nodiscard]] const {}& {}() const noexcept {{ return {}_; }}",
+                             self.indent._1, cpp_type_string, column.column_name, column.column_name
+                    ).expect(&self.error_message);
+                },
+                _ => {
+                    writeln!(writer, "{}[[nodiscard]] {} {}() const noexcept {{ return {}_; }}",
+                             self.indent._1, cpp_type_string, column.column_name, column.column_name
+                    ).expect(&self.error_message);
+                },
+            }
+        }
+    }
+
+    fn create_has(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"
+{0}[[nodiscard]] bool has(const int index) const noexcept {{ return bit_.test(index); }}
+{0}[[nodiscard]] bool has_none() const noexcept {{ return bit_.none(); }}
+{0}[[nodiscard]] bool has_all() const noexcept {{ return bit_.all(); }}
+{0}[[nodiscard]] bool has_any() const noexcept {{ return bit_.any(); }}"##, self.indent._1).expect(&self.error_message);
+        for column in column_list {
+            writeln!(writer, "{}[[nodiscard]] bool has_{}() const noexcept {{ return bit_.test(index_{}); }}",
+                self.indent._1, column.column_name, column.column_name
+            ).expect(&self.error_message);
+        }
+        writeln!(writer, "").expect(&self.error_message);
+    }
+
+    fn create_clear(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, "{}void clear() noexcept {{ *this = {{}}; }}", self.indent._1).expect(&self.error_message);
+        for column in column_list {
+            let cpp_type_string = self.type_mapping.database_to_cpp_mapping(&column.data_type);
+            let cpp_type = CppType::new(cpp_type_string);
+            match cpp_type {
+                CppType::Bool => {
+                    writeln!(writer, "{0}void clear_{1}() noexcept {{ {1}_ = false; bit_.reset(index_{1}); }}",
+                        self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+                CppType::Integer => {
+                    writeln!(writer, "{0}void clear_{1}() noexcept {{ {1}_ = 0; bit_.reset(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+                CppType::Float => {
+                    writeln!(writer, "{0}void clear_{1}() noexcept {{ {1}_ = 0.0; bit_.reset(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+                CppType::String => {
+                    writeln!(writer, "{0}void clear_{1}() noexcept {{ {1}_ = \"\"; bit_.reset(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+            }
+        }
+        writeln!(writer, "").expect(&self.error_message);
+    }
+
+    fn create_setter(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
+        for column in column_list {
+            let cpp_type_string = self.type_mapping.database_to_cpp_mapping(&column.data_type);
+            let cpp_type = CppType::new(cpp_type_string);
+            match cpp_type {
+                CppType::String => {
+                    writeln!(writer, "{0}void set_{1}(const char* {1}) noexcept {{ {1}_ = {1}; bit_.set(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                    writeln!(writer, "{0}void set_{1}(const std::string_view {1}) noexcept {{ {1}_ = {1}; bit_.set(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                    writeln!(writer, "{0}void set_{1}(const std::string& {1}) noexcept {{ {1}_ = {1}; bit_.set(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                    writeln!(writer, "{0}void set_{1}(std::string&& {1}) noexcept {{ {1}_ = std::move({1}); bit_.set(index_{1}); }}",
+                             self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+                _ => {
+                    writeln!(writer, "{0}void set_{1}(const {2} {1}) noexcept {{ {1}_ = {1}; bit_.set(index_{1}); }}",
+                        self.indent._1, column.column_name, cpp_type_string
+                    ).expect(&self.error_message);
+                },
+            }
+        }
+    }
+
+    fn create_function(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"
+{0}SensorParamRow& SetValidColumns();
+{0}SensorParamRow& SetValidColumns(const std::initializer_list<int>& valid_columns);
+{0}SensorParamRow& SetInvalidColumns();
+{0}void FromDatabaseRow(const pqxx::row& row);"##, self.indent._1).expect(&self.error_message);
+        self.json_generator.create_from_json(&self.indent._1, writer);
+        self.json_generator.create_to_json(&self.indent._1, writer);
+        writeln!(writer, "{}[[nodiscard]] std::string String(int index) const noexcept;",
+            self.indent._1
+        ).expect(&self.error_message);
+    }
+    fn create_row_class_tail(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, "}};").expect(&self.error_message);
+    }
+
+    fn create_table(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"
+struct {2}
+{{
+{0}common::ErrorCode error_code;
+{0}std::vector<{1}> table;
+
+{0}{2}() = default;
+{0}{2}(const {2}&) = default;
+{0}{2}({2}&&) noexcept = default;
+{0}{2}& operator=(const {2}&) = default;
+{0}{2}& operator=({2}&&) noexcept = default;
+
+{0}{1}& AddRow();
+{0}void Clear();"##, self.indent._1, self.row_class_name, self.table_class_name).expect(&self.error_message);
+        self.json_generator.create_to_json(&self.indent._1, writer);
+        writeln!(writer, "}};").expect(&self.error_message);
+        writeln!(writer, "").expect(&self.error_message);
+    }
+
+    fn create_header_tail(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, "}}").expect(&self.error_message);
+    }
 }
 
 impl<'a> HeaderGenerator for PostgresHeaderGenerator<'a> {
@@ -129,7 +267,8 @@ impl<'a> HeaderGenerator for PostgresHeaderGenerator<'a> {
         println!("generating header for {}", table_name);
         let header_file_full_path = format!("{}/{}.h", self.config_model.save_to_path(), table_name);
         println!("header file full path: {}", header_file_full_path);
-        self.class_name = CommonUtils::generate_class_name(String::from(table_name));
+        self.row_class_name = CommonUtils::generate_row_class_name(String::from(table_name));
+        self.table_class_name = CommonUtils::generate_table_class_name(String::from(table_name));
         let file = std::fs::File::create(header_file_full_path).expect("failed to create header file");
         let mut writer = std::io::BufWriter::new(file);
         self.create_head(&mut writer);
@@ -142,5 +281,13 @@ impl<'a> HeaderGenerator for PostgresHeaderGenerator<'a> {
             self.indent._1, table_name
         ).expect(&self.error_message);
         writeln!(writer, "").expect(&self.error_message);
+        self.create_getter(column_list, &mut writer);
+        self.create_has(column_list, &mut writer);
+        self.create_clear(column_list, &mut writer);
+        self.create_setter(column_list, &mut writer);
+        self.create_function(&mut writer);
+        self.create_row_class_tail(&mut writer);
+        self.create_table(&mut writer);
+        self.create_header_tail(&mut writer);
     }
 }

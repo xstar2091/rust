@@ -26,6 +26,8 @@ pub(crate) trait SourceGenerator {
 
 pub(crate) trait JsonHeaderGenerator {
     fn create_include(&self, writer: &mut std::io::BufWriter<std::fs::File>);
+    fn create_from_json(&self, indent: &str, writer: &mut std::io::BufWriter<std::fs::File>);
+    fn create_to_json(&self, indent: &str, writer: &mut std::io::BufWriter<std::fs::File>);
 }
 
 pub(crate) trait JsonSourceGenerator {

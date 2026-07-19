@@ -1,4 +1,5 @@
 pub(crate) enum CppType {
+    Bool,
     Integer,
     Float,
     String,
@@ -10,6 +11,8 @@ impl CppType {
             return Self::String;
         } else if cpp_type == "double" || cpp_type == "float" {
             return Self::Float;
+        } else if cpp_type == "bool" {
+            return Self::Bool;
         }
         Self::Integer
     }
