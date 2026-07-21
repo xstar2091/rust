@@ -21,7 +21,7 @@ pub(crate) trait HeaderGenerator {
 }
 
 pub(crate) trait SourceGenerator {
-    fn generate(&self, column_list: &[DatabaseColumnMeta]);
+    fn generate(&mut self, table_name: &str, column_list: &[DatabaseColumnMeta]);
 }
 
 pub(crate) trait JsonHeaderGenerator {

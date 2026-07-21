@@ -21,7 +21,7 @@ impl<'a> CodeGenerator<'a> {
         for table in config.database().table_list() {
             self.database_reader.read(config.database(), table).await;
             self.header_generator.generate(table, self.database_reader.column_meta_list());
-            self.source_generator.generate(self.database_reader.column_meta_list());
+            self.source_generator.generate(table, self.database_reader.column_meta_list());
         }
     }
 }
