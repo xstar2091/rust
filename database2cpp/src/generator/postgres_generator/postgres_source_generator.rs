@@ -59,6 +59,36 @@ namespace {}
         }
         writeln!(writer, "}}\n").expect(&self.error_message);
     }
+
+    pub(crate) fn create_set_valid_columns_1(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"{1}& {1}::SetValidColumns()
+{{
+{0}bit_.set();
+{0}return *this;
+}}
+"##, self.indent._1, self.row_class_name).expect(&self.error_message);
+    }
+
+    pub(crate) fn create_set_valid_columns_2(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"{2}& {2}::SetValidColumns(const std::initializer_list<int>& valid_columns)
+{{
+{0}for (const int index : valid_columns)
+{0}{{
+{1}bit_.set(index);
+{0}}}
+{0}return *this;
+}}
+"##, self.indent._1, self.indent._2, self.row_class_name).expect(&self.error_message);
+    }
+
+    pub(crate) fn create_set_invalid_columns(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"{1}& {1}::SetInvalidColumns()
+{{
+{0}bit_.reset();
+{0}return *this;
+}}
+"##, self.indent._1, self.row_class_name).expect(&self.error_message);
+    }
 }
 
 impl SourceGenerator for PostgresSourceGenerator<'_> {
@@ -73,5 +103,8 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         self.create_head(table_name, &mut writer);
         self.create_from_database_row(column_list, &mut writer);
         self.json_generator.create_from_json(&self.row_class_name, column_list, &mut writer);
+        self.create_set_valid_columns_1(&mut writer);
+        self.create_set_valid_columns_2(&mut writer);
+        self.create_set_invalid_columns(&mut writer);
     }
 }

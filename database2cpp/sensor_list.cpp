@@ -57,3 +57,25 @@ void SensorListRow::FromJson(const nlohmann::json& root)
         else if (name == create_time) set_create_time(value);
     }
 }
+
+SensorListRow& SensorListRow::SetValidColumns()
+{
+    bit_.set();
+    return *this;
+}
+
+SensorListRow& SensorListRow::SetValidColumns(const std::initializer_list<int>& valid_columns)
+{
+    for (const int index : valid_columns)
+    {
+        bit_.set(index);
+    }
+    return *this;
+}
+
+SensorListRow& SensorListRow::SetInvalidColumns()
+{
+    bit_.reset();
+    return *this;
+}
+

@@ -135,19 +135,10 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
                 generator_trait::CppType::String => {
                     writeln!(writer, "(value);").expect(&self.error_message);
                 }
-                generator_trait::CppType::Char => {}
-                generator_trait::CppType::UnsignedChar => {}
-                generator_trait::CppType::Short => {}
-                generator_trait::CppType::UnsignedShort => {}
-                generator_trait::CppType::Int => {}
-                generator_trait::CppType::UnsignedInt => {}
-                generator_trait::CppType::Long => {}
-                generator_trait::CppType::UnsignedLong => {}
-                generator_trait::CppType::LongLong => {}
-                generator_trait::CppType::UnsignedLongLong => {}
+                _ => {}
             }
         }
         writeln!(writer, "{0}}}", self.indent._1).expect(&self.error_message);
-        writeln!(writer, "}}").expect(&self.error_message);
+        writeln!(writer, "}}\n").expect(&self.error_message);
     }
 }
