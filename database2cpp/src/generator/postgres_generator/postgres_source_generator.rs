@@ -72,5 +72,6 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         let mut writer = std::io::BufWriter::new(file);
         self.create_head(table_name, &mut writer);
         self.create_from_database_row(column_list, &mut writer);
+        self.json_generator.create_from_json(&self.row_class_name, column_list, &mut writer);
     }
 }

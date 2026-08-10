@@ -10,6 +10,31 @@ pub struct DatabaseColumnMeta {
     pub default_value: Option<String>,
 }
 
+pub(crate) enum CppType {
+    Bool,
+    Int8,
+    UInt8,
+    Int16,
+    UInt16,
+    Int32,
+    UInt32,
+    Int64,
+    UInt64,
+    Float,
+    Double,
+    String,
+    Char,
+    UnsignedChar,
+    Short,
+    UnsignedShort,
+    Int,
+    UnsignedInt,
+    Long,
+    UnsignedLong,
+    LongLong,
+    UnsignedLongLong,
+}
+
 #[async_trait]
 pub(crate) trait DatabaseReader {
     async fn read(&mut self, conf: &DatabaseConfig, table_name: &str);
@@ -31,9 +56,15 @@ pub(crate) trait JsonHeaderGenerator {
 }
 
 pub(crate) trait JsonSourceGenerator {
-
+    fn create_from_json(
+        &self,
+        class_name: &str,
+        column_list: &[DatabaseColumnMeta],
+        writer: &mut std::io::BufWriter<std::fs::File>
+    );
 }
 
 pub(crate) trait DatabaseCppTypeMapping {
     fn database_to_cpp_mapping(&self, database_type: &str) -> &str;
+    fn database_to_cpp_type(&self, database_type: &str) -> CppType;
 }

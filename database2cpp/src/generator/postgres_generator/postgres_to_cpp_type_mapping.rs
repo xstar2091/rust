@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::generator::generator_trait::DatabaseCppTypeMapping;
+use crate::generator::generator_trait::{CppType, DatabaseCppTypeMapping};
 
 pub(crate) struct PostgresToCppTypeMapping {
     mapping: HashMap<String, String>,
@@ -52,5 +52,28 @@ impl DatabaseCppTypeMapping for PostgresToCppTypeMapping {
             None => { panic!("unknown database type {}", database_type); }
             Some(v) => v,
         }
+    }
+
+    fn database_to_cpp_type(&self, database_type: &str) -> CppType {
+        let type_str = self.database_to_cpp_mapping(database_type);
+        let cpp_type: CppType;
+        if type_str == "bool" {
+            cpp_type = CppType::Bool;
+        } else if type_str == "int16_t" {
+            cpp_type = CppType::Int16;
+        } else if type_str == "int32_t" {
+            cpp_type = CppType::Int32;
+        } else if type_str == "int64_t" {
+            cpp_type = CppType::Int64;
+        } else if type_str == "float" {
+            cpp_type = CppType::Float;
+        } else if type_str == "double" {
+            cpp_type = CppType::Double;
+        } else if type_str == "int" {
+            cpp_type = CppType::Int;
+        } else {
+            cpp_type = CppType::String;
+        }
+        cpp_type
     }
 }
