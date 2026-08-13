@@ -79,3 +79,13 @@ SensorListRow& SensorListRow::SetInvalidColumns()
     return *this;
 }
 
+std::string SensorListRow::String(const int index) const noexcept
+{
+    if (index == index_id) return fmt::format("{}", id_);
+    if (index == index_version_major) return fmt::format("{}", version_major_);
+    if (index == index_version_minor) return fmt::format("{}", version_minor_);
+    if (index == index_name) return name_;
+    if (index == index_description) return description_;
+    if (index == index_create_time) return create_time_;
+}
+

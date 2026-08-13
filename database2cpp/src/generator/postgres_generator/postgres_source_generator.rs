@@ -1,6 +1,7 @@
 use std::io::Write;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::common_utils::CommonUtils;
+use crate::generator::cpp_type_enum::CppType;
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{DatabaseCppTypeMapping, SourceGenerator, JsonSourceGenerator, DatabaseColumnMeta};
 use crate::generator::indent::Indent;
@@ -89,6 +90,35 @@ namespace {}
 }}
 "##, self.indent._1, self.row_class_name).expect(&self.error_message);
     }
+
+    pub(crate) fn create_string(
+        &self,
+        column_list: &[DatabaseColumnMeta],
+        writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"std::string {0}::String(const int index) const noexcept
+{{"##, self.row_class_name).expect(&self.error_message);
+        for column in column_list {
+            let cpp_type_string = self.type_mapping.database_to_cpp_mapping(&column.data_type);
+            let cpp_type = CppType::new(cpp_type_string);
+            match cpp_type {
+                CppType::String => {
+                    writeln!(
+                        writer,
+                        "{0}if (index == index_{1}) return {1}_;",
+                        self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+                _ => {
+                    writeln!(
+                        writer,
+                        "{0}if (index == index_{1}) return fmt::format(\"{{}}\", {1}_);",
+                        self.indent._1, column.column_name
+                    ).expect(&self.error_message);
+                },
+            }
+        }
+        writeln!(writer, "}}\n").expect(&self.error_message);
+    }
 }
 
 impl SourceGenerator for PostgresSourceGenerator<'_> {
@@ -106,5 +136,6 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         self.create_set_valid_columns_1(&mut writer);
         self.create_set_valid_columns_2(&mut writer);
         self.create_set_invalid_columns(&mut writer);
+        self.create_string(column_list, &mut writer);
     }
 }

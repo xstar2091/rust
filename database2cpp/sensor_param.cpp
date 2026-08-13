@@ -147,3 +147,30 @@ SensorParamRow& SensorParamRow::SetInvalidColumns()
     return *this;
 }
 
+std::string SensorParamRow::String(const int index) const noexcept
+{
+    if (index == index_id) return fmt::format("{}", id_);
+    if (index == index_sensor_list_id) return fmt::format("{}", sensor_list_id_);
+    if (index == index_project_id) return fmt::format("{}", project_id_);
+    if (index == index_group_id) return fmt::format("{}", group_id_);
+    if (index == index_car_imei) return car_imei_;
+    if (index == index_name) return name_;
+    if (index == index_description) return description_;
+    if (index == index_sensor_info) return sensor_info_;
+    if (index == index_input_enabled) return fmt::format("{}", input_enabled_);
+    if (index == index_output_enabled) return fmt::format("{}", output_enabled_);
+    if (index == index_downstream_enabled) return fmt::format("{}", downstream_enabled_);
+    if (index == index_input_range_min) return fmt::format("{}", input_range_min_);
+    if (index == index_input_range_max) return fmt::format("{}", input_range_max_);
+    if (index == index_input_interval) return fmt::format("{}", input_interval_);
+    if (index == index_input_param) return input_param_;
+    if (index == index_input_strategy) return input_strategy_;
+    if (index == index_output_auto_mode) return fmt::format("{}", output_auto_mode_);
+    if (index == index_output_heartbeat_interval) return fmt::format("{}", output_heartbeat_interval_);
+    if (index == index_output_interval) return fmt::format("{}", output_interval_);
+    if (index == index_output_param) return output_param_;
+    if (index == index_output_strategy) return output_strategy_;
+    if (index == index_downstream_info) return downstream_info_;
+    if (index == index_create_time) return create_time_;
+}
+
