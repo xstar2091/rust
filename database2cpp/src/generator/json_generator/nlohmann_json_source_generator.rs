@@ -1,4 +1,5 @@
-use std::io::Write;
+use std::fs::File;
+use std::io::{BufWriter, Write};
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::cpp_type_enum::CppType;
 use crate::generator::factory::Factory;
@@ -139,6 +140,65 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
             }
         }
         writeln!(writer, "{0}}}", self.indent._1).expect(&self.error_message);
+        writeln!(writer, "}}\n").expect(&self.error_message);
+    }
+
+    fn create_to_json(
+        &self,
+        class_name: &str,
+        column_list: &[DatabaseColumnMeta],
+        writer: &mut BufWriter<File>) {
+        write!(writer, r##"nlohmann::json {1}::ToJson() const
+{{
+{0}nlohmann::json root = nlohmann::json::object();
+"##, self.indent._1, class_name).expect(&self.error_message);
+        for (i, column) in column_list.iter().enumerate() {
+            writeln!(writer, "{0}if (has_{1}()) root[\"{1}\"] = {1}_;",
+                     self.indent._1, column.column_name
+            ).expect(&self.error_message);
+        }
+        writeln!(writer, "").expect(&self.error_message);
+        writeln!(
+            writer,
+            "{0}root[\"param\"] = nlohmann::json::array();",
+            self.indent._1
+        ).expect(&self.error_message);
+        writeln!(writer, "{0}auto& param = root[\"param\"];", self.indent._1).expect(&self.error_message);
+        for column in column_list {
+            if column.column_name == "id" {
+                continue;
+            }
+            let cpp_type_str = self.type_mapping.database_to_cpp_mapping(&column.data_type);
+            let cpp_type = CppType::new(cpp_type_str);
+            match cpp_type {
+                CppType::String => {
+                    writeln!(writer, r##"{0}if (has_{3}())
+{0}{{
+{1}param.push_back({{
+{2}{{"name", "{3}"}},
+{2}{{"value", {3}_}},
+{2}{{"desc", ""}},
+{2}{{"range", []}},
+{2}{{"type", "string"}},
+{2}{{"unit", ""}},
+{1}}});
+{0}}}"##, self.indent._1, self.indent._2, self.indent._3, column.column_name).expect(&self.error_message);
+                },
+                _ => {
+                    writeln!(writer, r##"{0}if (has_{3}())
+{0}{{
+{1}param.push_back({{
+{2}{{"name", "{3}"}},
+{2}{{"value", fmt::format("{{}}", {3}_)}},
+{2}{{"desc", ""}},
+{2}{{"range", []}},
+{2}{{"type", "double"}},
+{2}{{"unit", ""}},
+{1}}});
+{0}}}"##, self.indent._1, self.indent._2, self.indent._3, column.column_name).expect(&self.error_message);
+                }
+            }
+        }
         writeln!(writer, "}}\n").expect(&self.error_message);
     }
 }

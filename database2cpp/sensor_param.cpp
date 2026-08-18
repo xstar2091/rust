@@ -174,3 +174,276 @@ std::string SensorParamRow::String(const int index) const noexcept
     if (index == index_create_time) return create_time_;
 }
 
+nlohmann::json SensorParamRow::ToJson() const
+{
+    nlohmann::json root = nlohmann::json::object();
+    if (has_id()) root["id"] = id_;
+    if (has_sensor_list_id()) root["sensor_list_id"] = sensor_list_id_;
+    if (has_project_id()) root["project_id"] = project_id_;
+    if (has_group_id()) root["group_id"] = group_id_;
+    if (has_car_imei()) root["car_imei"] = car_imei_;
+    if (has_name()) root["name"] = name_;
+    if (has_description()) root["description"] = description_;
+    if (has_sensor_info()) root["sensor_info"] = sensor_info_;
+    if (has_input_enabled()) root["input_enabled"] = input_enabled_;
+    if (has_output_enabled()) root["output_enabled"] = output_enabled_;
+    if (has_downstream_enabled()) root["downstream_enabled"] = downstream_enabled_;
+    if (has_input_range_min()) root["input_range_min"] = input_range_min_;
+    if (has_input_range_max()) root["input_range_max"] = input_range_max_;
+    if (has_input_interval()) root["input_interval"] = input_interval_;
+    if (has_input_param()) root["input_param"] = input_param_;
+    if (has_input_strategy()) root["input_strategy"] = input_strategy_;
+    if (has_output_auto_mode()) root["output_auto_mode"] = output_auto_mode_;
+    if (has_output_heartbeat_interval()) root["output_heartbeat_interval"] = output_heartbeat_interval_;
+    if (has_output_interval()) root["output_interval"] = output_interval_;
+    if (has_output_param()) root["output_param"] = output_param_;
+    if (has_output_strategy()) root["output_strategy"] = output_strategy_;
+    if (has_downstream_info()) root["downstream_info"] = downstream_info_;
+    if (has_create_time()) root["create_time"] = create_time_;
+
+    root["param"] = nlohmann::json::array();
+    auto& param = root["param"];
+    if (has_sensor_list_id())
+    {
+        param.push_back({
+            {"name", "sensor_list_id"},
+            {"value", fmt::format("{}", sensor_list_id_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_project_id())
+    {
+        param.push_back({
+            {"name", "project_id"},
+            {"value", fmt::format("{}", project_id_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_group_id())
+    {
+        param.push_back({
+            {"name", "group_id"},
+            {"value", fmt::format("{}", group_id_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_car_imei())
+    {
+        param.push_back({
+            {"name", "car_imei"},
+            {"value", car_imei_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_name())
+    {
+        param.push_back({
+            {"name", "name"},
+            {"value", name_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_description())
+    {
+        param.push_back({
+            {"name", "description"},
+            {"value", description_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_sensor_info())
+    {
+        param.push_back({
+            {"name", "sensor_info"},
+            {"value", sensor_info_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_input_enabled())
+    {
+        param.push_back({
+            {"name", "input_enabled"},
+            {"value", fmt::format("{}", input_enabled_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_output_enabled())
+    {
+        param.push_back({
+            {"name", "output_enabled"},
+            {"value", fmt::format("{}", output_enabled_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_downstream_enabled())
+    {
+        param.push_back({
+            {"name", "downstream_enabled"},
+            {"value", fmt::format("{}", downstream_enabled_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_input_range_min())
+    {
+        param.push_back({
+            {"name", "input_range_min"},
+            {"value", fmt::format("{}", input_range_min_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_input_range_max())
+    {
+        param.push_back({
+            {"name", "input_range_max"},
+            {"value", fmt::format("{}", input_range_max_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_input_interval())
+    {
+        param.push_back({
+            {"name", "input_interval"},
+            {"value", fmt::format("{}", input_interval_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_input_param())
+    {
+        param.push_back({
+            {"name", "input_param"},
+            {"value", input_param_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_input_strategy())
+    {
+        param.push_back({
+            {"name", "input_strategy"},
+            {"value", input_strategy_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_output_auto_mode())
+    {
+        param.push_back({
+            {"name", "output_auto_mode"},
+            {"value", fmt::format("{}", output_auto_mode_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_output_heartbeat_interval())
+    {
+        param.push_back({
+            {"name", "output_heartbeat_interval"},
+            {"value", fmt::format("{}", output_heartbeat_interval_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_output_interval())
+    {
+        param.push_back({
+            {"name", "output_interval"},
+            {"value", fmt::format("{}", output_interval_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_output_param())
+    {
+        param.push_back({
+            {"name", "output_param"},
+            {"value", output_param_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_output_strategy())
+    {
+        param.push_back({
+            {"name", "output_strategy"},
+            {"value", output_strategy_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_downstream_info())
+    {
+        param.push_back({
+            {"name", "downstream_info"},
+            {"value", downstream_info_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_create_time())
+    {
+        param.push_back({
+            {"name", "create_time"},
+            {"value", create_time_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+}
+

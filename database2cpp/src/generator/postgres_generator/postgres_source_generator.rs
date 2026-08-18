@@ -137,5 +137,6 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         self.create_set_valid_columns_2(&mut writer);
         self.create_set_invalid_columns(&mut writer);
         self.create_string(column_list, &mut writer);
+        self.json_generator.create_to_json(&self.row_class_name, column_list, &mut writer);
     }
 }

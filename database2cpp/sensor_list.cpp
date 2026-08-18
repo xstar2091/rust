@@ -89,3 +89,72 @@ std::string SensorListRow::String(const int index) const noexcept
     if (index == index_create_time) return create_time_;
 }
 
+nlohmann::json SensorListRow::ToJson() const
+{
+    nlohmann::json root = nlohmann::json::object();
+    if (has_id()) root["id"] = id_;
+    if (has_version_major()) root["version_major"] = version_major_;
+    if (has_version_minor()) root["version_minor"] = version_minor_;
+    if (has_name()) root["name"] = name_;
+    if (has_description()) root["description"] = description_;
+    if (has_create_time()) root["create_time"] = create_time_;
+
+    root["param"] = nlohmann::json::array();
+    auto& param = root["param"];
+    if (has_version_major())
+    {
+        param.push_back({
+            {"name", "version_major"},
+            {"value", fmt::format("{}", version_major_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_version_minor())
+    {
+        param.push_back({
+            {"name", "version_minor"},
+            {"value", fmt::format("{}", version_minor_)},
+            {"desc", ""},
+            {"range", []},
+            {"type", "double"},
+            {"unit", ""},
+        });
+    }
+    if (has_name())
+    {
+        param.push_back({
+            {"name", "name"},
+            {"value", name_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_description())
+    {
+        param.push_back({
+            {"name", "description"},
+            {"value", description_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+    if (has_create_time())
+    {
+        param.push_back({
+            {"name", "create_time"},
+            {"value", create_time_},
+            {"desc", ""},
+            {"range", []},
+            {"type", "string"},
+            {"unit", ""},
+        });
+    }
+}
+
