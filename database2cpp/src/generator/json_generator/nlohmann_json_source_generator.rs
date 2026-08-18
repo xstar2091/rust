@@ -152,7 +152,7 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
 {{
 {0}nlohmann::json root = nlohmann::json::object();
 "##, self.indent._1, class_name).expect(&self.error_message);
-        for (i, column) in column_list.iter().enumerate() {
+        for column in column_list {
             writeln!(writer, "{0}if (has_{1}()) root[\"{1}\"] = {1}_;",
                      self.indent._1, column.column_name
             ).expect(&self.error_message);
