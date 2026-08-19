@@ -68,6 +68,13 @@ pub(crate) trait JsonSourceGenerator {
         column_list: &[DatabaseColumnMeta],
         writer: &mut std::io::BufWriter<std::fs::File>
     );
+    
+    fn create_table_class_to_json(
+        &self,
+        class_name: &str,
+        table_name: &str,
+        writer: &mut std::io::BufWriter<std::fs::File>
+    );
 }
 
 pub(crate) trait DatabaseCppTypeMapping {

@@ -199,6 +199,23 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
                 }
             }
         }
+        writeln!(writer, "{0}return root;", self.indent._1).expect(&self.error_message);
         writeln!(writer, "}}\n").expect(&self.error_message);
+    }
+
+    fn create_table_class_to_json(&self, class_name: &str, table_name: &str, writer: &mut BufWriter<File>) {
+        writeln!(writer, r##"nlohmann::json {2}::ToJson() const
+{{
+{0}nlohmann::json root = {{
+{1}{{"{3}", nlohmann::json::array()}}
+{0}}};
+{0}auto& array = root["{3}"];
+{0}for (const auto& row : table)
+{0}{{
+{1}array.emplace_back(row.ToJson());
+{0}}}
+{0}return root;
+}}
+"##, self.indent._1, self.indent._2, class_name, table_name).expect(&self.error_message);
     }
 }

@@ -119,6 +119,24 @@ namespace {}
         }
         writeln!(writer, "}}\n").expect(&self.error_message);
     }
+
+    pub(crate) fn create_table_class_add_row(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"{1}& {2}::AddRow()
+{{
+{0}table.emplace_back();
+{0}return table.back();
+}}
+"##, self.indent._1, self.row_class_name, self.table_class_name).expect(&self.error_message);
+    }
+
+    pub(crate) fn create_table_class_clear(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"void {1}::Clear()
+{{
+{0}error_code = common::ErrorCode();
+{0}table.clear();
+}}
+"##, self.indent._1, self.table_class_name).expect(&self.error_message);
+    }
 }
 
 impl SourceGenerator for PostgresSourceGenerator<'_> {
@@ -138,5 +156,9 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         self.create_set_invalid_columns(&mut writer);
         self.create_string(column_list, &mut writer);
         self.json_generator.create_to_json(&self.row_class_name, column_list, &mut writer);
+        self.create_table_class_add_row(&mut writer);
+        self.create_table_class_clear(&mut writer);
+        self.json_generator.create_table_class_to_json(&self.row_class_name, table_name, &mut writer);
+        writeln!(writer, "}}").expect(&self.error_message);
     }
 }
