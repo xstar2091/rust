@@ -16,7 +16,8 @@
         "save_to_path": ".",
         "namespace": "simcloud::utils"
     },
-    "json": "nlohmann",
+    "json1": "nlohmann",
+    "json": "jsoncpp",
     "formater": {
         "indent_char": " ",
         "indent_width": 4,

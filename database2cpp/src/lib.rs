@@ -11,6 +11,7 @@ pub mod generator {
     pub(crate) mod indent;
     
     pub(crate) mod json_generator {
+        pub(crate) mod jsoncpp_json_header_generator;
         pub(crate) mod nlohmann_json_header_generator;
         pub(crate) mod nlohmann_json_source_generator;
     }
