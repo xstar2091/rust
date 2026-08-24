@@ -1,6 +1,7 @@
 use crate::config::{Config, DatabaseConfig};
 use crate::generator::generator_trait::{DatabaseCppTypeMapping, DatabaseReader, HeaderGenerator, JsonHeaderGenerator, JsonSourceGenerator, SourceGenerator};
 use crate::generator::json_generator::jsoncpp_json_header_generator::JsoncppJsonHeaderGenerator;
+use crate::generator::json_generator::jsoncpp_json_source_generator::JsoncppJsonSourceGenerator;
 use crate::generator::json_generator::nlohmann_json_header_generator::NlohmannJsonHeaderGenerator;
 use crate::generator::json_generator::nlohmann_json_source_generator::NlohmannJsonSourceGenerator;
 use crate::generator::postgres_generator::postgres_header_generator::PostgresHeaderGenerator;
@@ -51,6 +52,8 @@ impl Factory {
     pub(crate) fn create_json_source_generator<'a>(config: &'a Config) -> Box<dyn JsonSourceGenerator + 'a> {
         if config.json() == "nlohmann" {
             return Box::new(NlohmannJsonSourceGenerator::new(config))
+        } else if config.json() == "jsoncpp" {
+            return Box::new(JsoncppJsonSourceGenerator::new(config))
         }
         panic!("unknown json lib type {}", config.json());
     }
