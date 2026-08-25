@@ -1,7 +1,6 @@
 use std::io::Write;
 use std::fs::File;
 use std::io::BufWriter;
-use serde::Serialize;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{CppType, DatabaseColumnMeta, DatabaseCppTypeMapping, JsonSourceGenerator};
@@ -453,9 +452,81 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
     }
 
     fn create_to_json(&self, class_name: &str, column_list: &[DatabaseColumnMeta], writer: &mut BufWriter<File>) {
-        println!("aa");
-        return;
-        todo!()
+        writeln!(
+            writer,
+            r##"Json::Value {1}::ToJson() const
+{{
+{0}Json::Value root;"##, self.indent._1, class_name
+        ).expect(&self.error_message);
+
+        for column in column_list {
+            writeln!(
+                writer,
+                r##"{0}if (has_{1}()) root["{1}"] = {1}_;"##, self.indent._1, column.column_name
+            ).expect(&self.error_message);
+        }
+        writeln!(writer, "{0}Json::Value param(Json::arrayValue);", self.indent._1).expect(&self.error_message);
+        for column in column_list {
+            if column.column_name == "id" {
+                continue;
+            }
+            let cpp_type_str = self.type_mapping.database_to_cpp_mapping(&column.data_type);
+            let cpp_type = crate::generator::cpp_type_enum::CppType::new(cpp_type_str);
+            match cpp_type {
+                crate::generator::cpp_type_enum::CppType::Bool => {
+                    writeln!(
+                        writer,
+                        r##"{0}if (has_{2}())
+{0}{{
+{1}Json::Value obj(Json::objectValue);
+{1}obj["name"] = "{2}";
+{1}obj["value"] = std::format("{{}}", {2}_);
+{1}obj["desc"] = "";
+{1}obj["range"] = Json::Value(Json::arrayValue);
+{1}obj["type"] = "string";
+{1}obj["unit"] = "";
+{1}param.push_back(std::move(obj));
+{0}}}"##, self.indent._1, self.indent._2, column.column_name
+                    ).expect(&self.error_message);
+                }
+                crate::generator::cpp_type_enum::CppType::String => {
+                    writeln!(
+                        writer,
+                        r##"{0}if (has_{2}())
+{0}{{
+{1}Json::Value obj(Json::objectValue);
+{1}obj["name"] = "{2}";
+{1}obj["value"] = {2}_;
+{1}obj["desc"] = "";
+{1}obj["range"] = Json::Value(Json::arrayValue);
+{1}obj["type"] = "string";
+{1}obj["unit"] = "";
+{1}param.push_back(std::move(obj));
+{0}}}"##, self.indent._1, self.indent._2, column.column_name
+                    ).expect(&self.error_message);
+                }
+                _ => {
+                    writeln!(
+                        writer,
+                        r##"{0}if (has_{2}())
+{0}{{
+{1}Json::Value obj(Json::objectValue);
+{1}obj["name"] = "{2}";
+{1}obj["value"] = std::format("{{}}", {2}_);
+{1}obj["desc"] = "";
+{1}obj["range"] = Json::Value(Json::arrayValue);
+{1}obj["type"] = "double";
+{1}obj["unit"] = "";
+{1}param.push_back(std::move(obj));
+{0}}}"##, self.indent._1, self.indent._2, column.column_name
+                    ).expect(&self.error_message);
+                }
+            }
+        }
+        writeln!(writer, "{0}root[\"param\"] = std::move(param);", self.indent._1).expect(&self.error_message);
+        writeln!(writer, "{0}return root;", self.indent._1).expect(&self.error_message);
+
+        writeln!(writer, "}}\n").expect(&self.error_message);
     }
 
     fn create_table_class_to_json(&self, class_name: &str, table_name: &str, writer: &mut BufWriter<File>) {
