@@ -530,8 +530,22 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
     }
 
     fn create_table_class_to_json(&self, class_name: &str, table_name: &str, writer: &mut BufWriter<File>) {
-        println!("aa");
-        return;
-        todo!()
+        writeln!(
+            writer,
+            r##"Json::Value {2}::ToJson() const
+{{
+{0}Json::Value root(Json::objectValue);
+{0}root["{3}"] = Json::Value(Json::arrayValue);
+{0}auto& array = root["{3}"];
+{0}array.resize(table.size());
+{0}for (size_t i = 0; i < table.size(); ++i)
+{0}{{
+{1}array[static_cast<Json::ArrayIndex>(i)] = table[i].ToJson();
+{0}}}
+{0}return root;
+}}
+"##,
+            self.indent._1, self.indent._2, class_name, table_name
+        ).expect(&self.error_message);
     }
 }
