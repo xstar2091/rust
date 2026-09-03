@@ -1,7 +1,30 @@
 use std::collections::HashMap;
 
+const TITLE_PREFIX_SURFIX_SIZE: usize = 17;
+fn print_title(name: &str) {
+    let line: String = std::iter::repeat('-').take(TITLE_PREFIX_SURFIX_SIZE).collect();
+    println!("{}{}{}", line, name, line);
+}
+
+macro_rules! print_func_name {
+    () => {
+        let bt = std::backtrace::Backtrace::capture();
+        let line = bt
+            .to_string()
+            .lines()
+            .next()                     // 第一行
+            .unwrap_or("")
+            .to_string();
+        let func_name = line.split_whitespace()
+            .nth(1)
+            .unwrap_or("unknown")
+            .to_string();
+        println!("{}{}{}", "-".repeat(17), func_name, "-".repeat(17));
+    };
+}
+
 fn create() {
-    println!("-----------------create-----------------");
+    print_func_name!();
     // new
     let map: HashMap<i32, i32> = HashMap::new();
     // with_capacity
@@ -13,7 +36,7 @@ fn create() {
 }
 
 fn insert_and_update() {
-    println!("-----------------insert_and_update-----------------");
+    print_func_name!();
 
     let mut map: HashMap<&str, i32> = HashMap::new();
     println!("new(insert): {:?}", map);
@@ -67,7 +90,156 @@ fn insert_and_update() {
     println!("entry(\"a\").and_modify.or_insert(1): {:?}", map);
 }
 
+fn get_from_hash_map() {
+    print_func_name!();
+    let mut map: HashMap<&str, i32> = HashMap::new();
+    println!("new(get): {:?}", map);
+
+    println!("empty map");
+    let v = map.get("a");
+    println!("get(\"a\"): {:?}", v);
+    if let Some(v) = map.get("a") {
+        println!("a: {}", v);
+    } else {
+        println!("a not found");
+    }
+    println!();
+
+    println!("insert key a");
+    map.insert("a", 1);
+    let v = map.get("a");
+    println!("get(\"a\"): {:?}", v);
+    if let Some(v) = map.get("a") {
+        println!("a: {}", v);
+    } else {
+        println!("a not found");
+    }
+    println!();
+
+    println!("change zhe value");
+    if let Some(v) = map.get_mut("a") {
+        *v += 1;
+    }
+    let v = map.get("a");
+    println!("get(\"a\"): {:?}", v);
+    if let Some(v) = map.get("a") {
+        println!("a: {}", v);
+    } else {
+        println!("a not found");
+    }
+    println!();
+
+    println!("key contains");
+    let exist = map.contains_key("a");
+    println!("key contains a: {}", exist);
+    let exist = map.contains_key("b");
+    println!("key contains b: {}", exist);
+    println!();
+
+    println!("is empty");
+    let is_empty = map.is_empty();
+    println!("is_empty is: {}", is_empty);
+    println!();
+
+    println!("map len");
+    let len = map.len();
+    println!("map len: {}", len);
+    println!();
+}
+
+fn remove() {
+    print_func_name!();
+    let mut map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+
+    println!("map: {:?}", map);
+    map.remove("a");
+    println!("remove(\"a\"): {:?}", map);
+    if let Some((k, v)) = map.remove_entry("b") {
+        println!("remove_entry, key:{}, value:{}", k, v);
+    }
+    println!("remove_entry(\"b\"): {:?}", map);
+
+    map.clear();
+    println!("clear: {:?}", map);
+
+    let mut map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    for (k, v) in map.drain() {
+        println!("drain, key:{}, value:{}", k, v);
+    }
+    println!("drain(): {:?}", map);
+}
+
+fn traverse() {
+    print_func_name!();
+
+    // 遍历键值对（不可变）
+    println!("遍历键值对（不可变）");
+    let map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("origin: {:?}", map);
+    for (k, v) in &map {
+        println!("key:{}, value:{}", k, v);
+    }
+    println!("after: {:?}", map);
+    println!();
+
+    // 遍历键值对（可变）
+    println!("遍历键值对（可变）");
+    let mut map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("origin: {:?}", map);
+    for (_, v) in &mut map {
+        *v += 1;
+    }
+    println!("after: {:?}", map);
+    println!();
+
+    // 遍历键
+    println!("遍历键");
+    let map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("origin: {:?}", map);
+    for k in map.keys() {
+        println!("key: {}", k);
+    }
+    println!("after: {:?}", map);
+    println!();
+
+    // 遍历键
+    println!("遍历值");
+    let map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("origin: {:?}", map);
+    for v in map.values() {
+        println!("value: {}", v);
+    }
+    println!("after: {:?}", map);
+    println!();
+
+    // 遍历键
+    println!("遍历值（可变）");
+    let mut map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("origin: {:?}", map);
+    for v in map.values_mut() {
+        *v += 1
+    }
+    println!("after: {:?}", map);
+    println!();
+
+    // 移动遍历，之后map不可再使用
+    println!("遍历后map不可再使用");
+    let map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("origin: {:?}", map);
+    for (k, v) in map {
+        println!("key:{}, value:{}", k, v);
+    }
+    // 从这里开始，map不能再用了
+    println!();
+}
+fn len_and_cap() {
+    print_func_name!();
+}
+
 fn main() {
     create();
     insert_and_update();
+    get_from_hash_map();
+    remove();
+    traverse();
 }
