@@ -234,6 +234,22 @@ fn traverse() {
 }
 fn len_and_cap() {
     print_func_name!();
+    let mut map: HashMap<_, _> = vec![("a", 1), ("b", 2), ("c", 3)].into_iter().collect();
+    println!("len: {}, capacity: {}", map.len(), map.capacity());
+    map.reserve(10);
+    println!("len: {}, capacity: {}", map.len(), map.capacity());
+    map.shrink_to_fit();
+    println!("len: {}, capacity: {}", map.len(), map.capacity());
+}
+
+fn extend() {
+    print_func_name!();
+    let mut map: HashMap<_, _> = vec![("a", 1), ("b", 2)].into_iter().collect();
+    println!("origin: {:?}", map);
+    let more = [("c", 3), ("d", 4)];
+    map.extend(more);
+    println!("extend: {:?}", map);
+    println!();
 }
 
 fn main() {
@@ -242,4 +258,6 @@ fn main() {
     get_from_hash_map();
     remove();
     traverse();
+    len_and_cap();
+    extend();
 }
