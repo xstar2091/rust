@@ -81,3 +81,13 @@ pub(crate) trait DatabaseCppTypeMapping {
     fn database_to_cpp_mapping(&self, database_type: &str) -> &str;
     fn database_to_cpp_type(&self, database_type: &str) -> CppType;
 }
+
+pub(crate) trait DatabaseClientLibraryHeaderGenerator {
+    fn create_database_library_namespace(&self, writer: &mut std::io::BufWriter<std::fs::File>);
+    fn create_from_database_row(&self, writer: &mut std::io::BufWriter<std::fs::File>);
+}
+
+pub(crate) trait DatabaseClientLibrarySourceGenerator {
+    fn create_include(&self, writer: &mut std::io::BufWriter<std::fs::File>);
+    fn create_from_database_row(&self, class_name: &str, writer: &mut std::io::BufWriter<std::fs::File>);
+}
