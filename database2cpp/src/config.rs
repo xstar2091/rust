@@ -12,7 +12,10 @@ pub enum ConfigError {
 pub struct Config {
     database: DatabaseConfig,
     model: ModelConfig,
+    // 可取值：jsoncpp, nlohmann
     json: String,
+    // 可取值：drogon, pqxx
+    database_client_library: String,
     formater: FormaterConfig,
 }
 
@@ -67,6 +70,8 @@ impl Config {
     pub fn json(&self) -> &str {
         &self.json
     }
+
+    pub fn database_client_library(&self) -> &str { &self.database_client_library }
     
     pub fn formater(&self) -> &FormaterConfig {
         &self.formater

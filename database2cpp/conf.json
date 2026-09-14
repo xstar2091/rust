@@ -16,9 +16,7 @@
         "save_to_path": ".",
         "namespace": "simcloud::utils"
     },
-    "json1": "nlohmann",
     "json": "jsoncpp",
-    "database_client_library1": "drogon",
     "database_client_library": "pqxx",
     "formater": {
         "indent_char": " ",
