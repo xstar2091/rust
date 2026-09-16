@@ -17,7 +17,7 @@
         "namespace": "simcloud::utils"
     },
     "json": "jsoncpp",
-    "database_client_library": "pqxx",
+    "database_client_library": "drogon",
     "formater": {
         "indent_char": " ",
         "indent_width": 4,

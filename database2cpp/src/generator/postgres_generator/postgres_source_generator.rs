@@ -3,7 +3,7 @@ use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::common_utils::CommonUtils;
 use crate::generator::cpp_type_enum::CppType;
 use crate::generator::factory::Factory;
-use crate::generator::generator_trait::{DatabaseCppTypeMapping, SourceGenerator, JsonSourceGenerator, DatabaseColumnMeta};
+use crate::generator::generator_trait::{DatabaseCppTypeMapping, SourceGenerator, JsonSourceGenerator, DatabaseColumnMeta, DatabaseClientLibrarySourceGenerator};
 use crate::generator::indent::Indent;
 
 pub(crate) struct PostgresSourceGenerator<'a> {
@@ -11,6 +11,7 @@ pub(crate) struct PostgresSourceGenerator<'a> {
     config_model: &'a ModelConfig,
     indent : Indent,
     json_generator: Box<dyn JsonSourceGenerator + 'a>,
+    database_client_generator: Box<dyn DatabaseClientLibrarySourceGenerator + 'a>,
     type_mapping: Box<dyn DatabaseCppTypeMapping>,
     row_class_name: String,
     table_class_name: String,
@@ -24,6 +25,7 @@ impl<'a> PostgresSourceGenerator<'a> {
             config_model: config.model(),
             indent: Indent::new(),
             json_generator: Factory::create_json_source_generator(config),
+            database_client_generator: Factory::create_database_client_source_generator(config),
             type_mapping: Factory::create_database_to_cpp_type_mapping(config.database().typename()),
             row_class_name: String::new(),
             table_class_name: String::new(),
@@ -32,14 +34,20 @@ impl<'a> PostgresSourceGenerator<'a> {
     }
 
     pub(crate) fn create_head(&self, table_name: &str, writer: &mut std::io::BufWriter<std::fs::File>) {
-        writeln!(writer, r##"#include "{}.h"
+        writeln!(
+            writer,
+            r##"#include "{}.h"
 
 #include <fmt/format.h>
-#include <pqxx/row>
+{}
 
 namespace {}
 {{
-"##, table_name, self.config_model.namespace()).expect(&self.error_message);
+"##,
+            table_name,
+            self.database_client_generator.library_include(),
+            self.config_model.namespace()
+        ).expect(&self.error_message);
     }
 
     pub(crate) fn create_from_database_row(

@@ -41,19 +41,20 @@ impl<'a> PostgresHeaderGenerator<'a> {
 #include <string>
 #include <vector>"##).expect(&self.error_message);
         self.json_generator.create_include(writer);
-        writeln!(writer, "#include \"simcommon/error_trace_info.h\"").expect(&self.error_message);
+        writeln!(writer, "#include \"simcommon/error_code.h\"").expect(&self.error_message);
         writeln!(writer, r##"
-namespace pqxx
-{{
-class row;
-}}
+{}
 
 namespace {}
 {{
 
 class {}
 {{
-"##, self.config_model.namespace(), self.row_class_name).expect(&self.error_message);
+"##,
+                 self.database_client_generator.database_library_namespace(),
+                 self.config_model.namespace(),
+                 self.row_class_name
+        ).expect(&self.error_message);
     }
 
     fn create_member(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
@@ -227,8 +228,8 @@ class {}
         writeln!(writer, r##"
 {0}SensorParamRow& SetValidColumns();
 {0}SensorParamRow& SetValidColumns(const std::initializer_list<int>& valid_columns);
-{0}SensorParamRow& SetInvalidColumns();
-{0}void FromDatabaseRow(const pqxx::row& row);"##, self.indent._1).expect(&self.error_message);
+{0}SensorParamRow& SetInvalidColumns();"##, self.indent._1).expect(&self.error_message);
+        self.database_client_generator.create_from_database_row(writer);
         self.json_generator.create_from_json(&self.indent._1, writer);
         self.json_generator.create_to_json(&self.indent._1, writer);
         writeln!(writer, "{}[[nodiscard]] std::string String(int index) const noexcept;",
