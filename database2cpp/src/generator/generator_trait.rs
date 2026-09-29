@@ -89,5 +89,10 @@ pub(crate) trait DatabaseClientLibraryHeaderGenerator {
 
 pub(crate) trait DatabaseClientLibrarySourceGenerator {
     fn library_include(&self) -> &str;
-    fn create_from_database_row(&self, class_name: &str, writer: &mut std::io::BufWriter<std::fs::File>);
+    fn create_from_database_row(
+        &self,
+        class_name: &str,
+        column_list: &[DatabaseColumnMeta],
+        writer: &mut std::io::BufWriter<std::fs::File>
+    );
 }

@@ -5,8 +5,9 @@ use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{DatabaseClientLibrarySourceGenerator, DatabaseColumnMeta, DatabaseCppTypeMapping};
 use crate::generator::indent::Indent;
+use crate::generator::postgres_generator::postgres_client_drogon_source_generator::PostgresClientDrogonSourceGenerator;
 
-pub(crate) struct PostgresClientDrogonSourceGenerator<'a> {
+pub(crate) struct PostgresClientPqxxSourceGenerator<'a> {
     formater: &'a FormaterConfig,
     model: &'a ModelConfig,
     indent : Indent,
@@ -15,7 +16,7 @@ pub(crate) struct PostgresClientDrogonSourceGenerator<'a> {
     library_include: &'static str,
 }
 
-impl<'a> PostgresClientDrogonSourceGenerator<'a> {
+impl<'a> PostgresClientPqxxSourceGenerator<'a> {
     pub fn new(config: &'a Config) -> Self {
         Self {
             formater: &config.formater(),
@@ -23,13 +24,12 @@ impl<'a> PostgresClientDrogonSourceGenerator<'a> {
             indent: Indent::new(),
             type_mapping: Factory::create_database_to_cpp_type_mapping(config.database().typename()),
             error_message: String::from("write source file failed"),
-            library_include: r##"#include <drogon/orm/Field.h>
-#include <drogon/orm/Row.h>"##,
+            library_include: "#include <pqxx/row>",
         }
     }
 }
 
-impl<'a> DatabaseClientLibrarySourceGenerator for PostgresClientDrogonSourceGenerator<'a> {
+impl<'a> DatabaseClientLibrarySourceGenerator for PostgresClientPqxxSourceGenerator<'a> {
     fn library_include(&self) -> &str {
         self.library_include
     }

@@ -6,6 +6,8 @@ use crate::generator::json_generator::nlohmann_json_header_generator::NlohmannJs
 use crate::generator::json_generator::nlohmann_json_source_generator::NlohmannJsonSourceGenerator;
 use crate::generator::postgres_generator::postgres_client_drogon_header_generator::PostgresClientDrogonHeaderGenerator;
 use crate::generator::postgres_generator::postgres_client_drogon_source_generator::PostgresClientDrogonSourceGenerator;
+use crate::generator::postgres_generator::postgres_client_pqxx_header_generator::PostgresClientPqxxHeaderGenerator;
+use crate::generator::postgres_generator::postgres_client_pqxx_source_generator::PostgresClientPqxxSourceGenerator;
 use crate::generator::postgres_generator::postgres_header_generator::PostgresHeaderGenerator;
 use crate::generator::postgres_generator::postgres_reader::PostgresReader;
 use crate::generator::postgres_generator::postgres_source_generator::PostgresSourceGenerator;
@@ -64,7 +66,7 @@ impl Factory {
         if config.database_client_library() == "drogon" {
             return Box::new(PostgresClientDrogonHeaderGenerator::new(config))
         } else if config.database_client_library() == "pqxx" {
-            todo!("pqxx")
+            return Box::new(PostgresClientPqxxHeaderGenerator::new(config))
         }
         panic!("unknown database client library {}", config.database_client_library());
     }
@@ -73,7 +75,7 @@ impl Factory {
         if config.database_client_library() == "drogon" {
             return Box::new(PostgresClientDrogonSourceGenerator::new(config))
         } else if config.database_client_library() == "pqxx" {
-            todo!("pqxx")
+            return Box::new(PostgresClientPqxxSourceGenerator::new(config))
         }
         panic!("unknown database client library {}", config.database_client_library());
     }

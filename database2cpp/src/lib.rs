@@ -20,6 +20,8 @@ pub mod generator {
     pub(crate) mod postgres_generator {
         pub(crate) mod postgres_client_drogon_header_generator;
         pub(crate) mod postgres_client_drogon_source_generator;
+        pub(crate) mod postgres_client_pqxx_header_generator;
+        pub(crate) mod postgres_client_pqxx_source_generator;
         pub(crate) mod postgres_header_generator;
         pub(crate) mod postgres_reader;
         pub(crate) mod postgres_source_generator;

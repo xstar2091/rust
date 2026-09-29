@@ -54,19 +54,11 @@ namespace {}
         &self,
         column_list: &[DatabaseColumnMeta],
         writer: &mut std::io::BufWriter<std::fs::File>) {
-        writeln!(writer, r##"void SensorParamRow::FromDatabaseRow(const pqxx::row& row)
-{{
-{0}if (bit_.none())
-{0}{{
-{1}bit_.set();
-{0}}}"##, self.indent._1, self.indent._2).expect(&self.error_message);
-        for column in column_list {
-            let cpp_type_string = self.type_mapping.database_to_cpp_mapping(&column.data_type);
-            writeln!(writer, "{0}if (has_{1}()) set_{1}(row[\"{1}\"].as<{2}>());",
-                self.indent._1, column.column_name, cpp_type_string
-            ).expect(&self.error_message);
-        }
-        writeln!(writer, "}}\n").expect(&self.error_message);
+        self.database_client_generator.create_from_database_row(
+            &self.row_class_name,
+            column_list,
+            writer,
+        )
     }
 
     pub(crate) fn create_set_valid_columns_1(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
