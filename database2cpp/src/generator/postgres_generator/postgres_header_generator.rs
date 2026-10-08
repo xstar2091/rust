@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::rc::Rc;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::common_utils::CommonUtils;
 use crate::generator::cpp_type_enum::CppType;
@@ -9,7 +10,7 @@ use crate::generator::indent::Indent;
 pub(crate) struct PostgresHeaderGenerator<'a> {
     config_formater: &'a FormaterConfig,
     config_model: &'a ModelConfig,
-    indent : Indent,
+    indent : Rc<Indent>,
     json_generator: Box<dyn JsonHeaderGenerator + 'a>,
     database_client_generator: Box<dyn DatabaseClientLibraryHeaderGenerator + 'a>,
     type_mapping: Box<dyn DatabaseCppTypeMapping>,
@@ -19,13 +20,13 @@ pub(crate) struct PostgresHeaderGenerator<'a> {
 }
 
 impl<'a> PostgresHeaderGenerator<'a> {
-    pub(crate) fn new(config: &'a Config) -> Self {
+    pub(crate) fn new(config: &'a Config, indent: Rc<Indent>) -> Self {
         Self {
             config_formater: config.formater(),
             config_model: config.model(),
-            indent: Indent::new(),
+            indent: indent.clone(),
             json_generator: Factory::create_json_header_generator(config),
-            database_client_generator: Factory::create_database_client_header_generator(config),
+            database_client_generator: Factory::create_database_client_header_generator(config, indent.clone()),
             type_mapping: Factory::create_database_to_cpp_type_mapping(config.database().typename()),
             row_class_name: String::new(),
             table_class_name: String::new(),

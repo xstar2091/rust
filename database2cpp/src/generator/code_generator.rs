@@ -1,6 +1,8 @@
+use std::rc::Rc;
 use crate::config::Config;
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{DatabaseReader, HeaderGenerator, SourceGenerator};
+use crate::generator::indent::Indent;
 
 pub struct CodeGenerator<'a> {
     database_reader: Box<dyn DatabaseReader>,
@@ -10,10 +12,11 @@ pub struct CodeGenerator<'a> {
 
 impl<'a> CodeGenerator<'a> {
     pub async fn new(config: &Config) -> CodeGenerator {
+        let indent = Rc::new(Indent::new());
         CodeGenerator {
             database_reader: Factory::create_database_reader(config.database()).await,
-            header_generator: Factory::create_header_generator(config),
-            source_generator: Factory::create_source_generator(config),
+            header_generator: Factory::create_header_generator(config, indent.clone()),
+            source_generator: Factory::create_source_generator(config, indent.clone()),
         }
     }
     

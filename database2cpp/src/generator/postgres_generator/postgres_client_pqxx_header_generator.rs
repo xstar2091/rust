@@ -1,6 +1,7 @@
 use std::io::Write;
 use std::fs::File;
 use std::io::BufWriter;
+use std::rc::Rc;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::generator_trait::DatabaseClientLibraryHeaderGenerator;
 use crate::generator::indent::Indent;
@@ -8,16 +9,16 @@ use crate::generator::indent::Indent;
 pub(crate) struct PostgresClientPqxxHeaderGenerator<'a> {
     formater: &'a FormaterConfig,
     model: &'a ModelConfig,
-    indent : Indent,
+    indent : Rc<Indent>,
     library_namespace: &'static str,
 }
 
 impl<'a> PostgresClientPqxxHeaderGenerator<'a> {
-    pub fn new(config: &'a Config) -> Self {
+    pub fn new(config: &'a Config, indent: Rc<Indent>) -> Self {
         Self {
             formater: &config.formater(),
             model: &config.model(),
-            indent: Indent::new(),
+            indent,
             library_namespace: r##"namespace pqxx
 {
 class row;

@@ -1,6 +1,7 @@
 use std::io::Write;
 use std::fs::File;
 use std::io::BufWriter;
+use std::rc::Rc;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{DatabaseClientLibrarySourceGenerator, DatabaseColumnMeta, DatabaseCppTypeMapping};
@@ -9,18 +10,18 @@ use crate::generator::indent::Indent;
 pub(crate) struct PostgresClientDrogonSourceGenerator<'a> {
     formater: &'a FormaterConfig,
     model: &'a ModelConfig,
-    indent : Indent,
+    indent : Rc<Indent>,
     type_mapping: Box<dyn DatabaseCppTypeMapping>,
     error_message: String,
     library_include: &'static str,
 }
 
 impl<'a> PostgresClientDrogonSourceGenerator<'a> {
-    pub fn new(config: &'a Config) -> Self {
+    pub fn new(config: &'a Config, indent: Rc<Indent>) -> Self {
         Self {
             formater: &config.formater(),
             model: &config.model(),
-            indent: Indent::new(),
+            indent,
             type_mapping: Factory::create_database_to_cpp_type_mapping(config.database().typename()),
             error_message: String::from("write source file failed"),
             library_include: r##"#include <drogon/orm/Field.h>

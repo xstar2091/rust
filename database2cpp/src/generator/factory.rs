@@ -1,5 +1,7 @@
+use std::rc::Rc;
 use crate::config::{Config, DatabaseConfig};
 use crate::generator::generator_trait::{DatabaseClientLibraryHeaderGenerator, DatabaseClientLibrarySourceGenerator, DatabaseCppTypeMapping, DatabaseReader, HeaderGenerator, JsonHeaderGenerator, JsonSourceGenerator, SourceGenerator};
+use crate::generator::indent::Indent;
 use crate::generator::json_generator::jsoncpp_json_header_generator::JsoncppJsonHeaderGenerator;
 use crate::generator::json_generator::jsoncpp_json_source_generator::JsoncppJsonSourceGenerator;
 use crate::generator::json_generator::nlohmann_json_header_generator::NlohmannJsonHeaderGenerator;
@@ -23,16 +25,16 @@ impl Factory {
         panic!("unknown database type {}", config.typename());
     }
 
-    pub(crate) fn create_header_generator<'a>(config: &'a Config) -> Box<dyn HeaderGenerator + 'a> {
+    pub(crate) fn create_header_generator<'a>(config: &'a Config, indent: Rc<Indent>) -> Box<dyn HeaderGenerator + 'a> {
         if config.database().typename() == "postgres" {
-            return Box::new(PostgresHeaderGenerator::new(config))
+            return Box::new(PostgresHeaderGenerator::new(config, indent))
         }
         panic!("unknown database type {}", config.database().typename());
     }
     
-    pub(crate) fn create_source_generator<'a>(config: &'a Config) -> Box<dyn SourceGenerator + 'a> {
+    pub(crate) fn create_source_generator<'a>(config: &'a Config, indent: Rc<Indent>) -> Box<dyn SourceGenerator + 'a> {
         if config.database().typename() == "postgres" {
-            return Box::new(PostgresSourceGenerator::new(config))
+            return Box::new(PostgresSourceGenerator::new(config, indent))
         }
         panic!("unknown database type {}", config.database().typename());
     }
@@ -62,20 +64,20 @@ impl Factory {
         panic!("unknown json lib type {}", config.json());
     }
     
-    pub(crate) fn create_database_client_header_generator<'a>(config: &'a Config) -> Box<dyn DatabaseClientLibraryHeaderGenerator + 'a> {
+    pub(crate) fn create_database_client_header_generator<'a>(config: &'a Config, indent: Rc<Indent>) -> Box<dyn DatabaseClientLibraryHeaderGenerator + 'a> {
         if config.database_client_library() == "drogon" {
-            return Box::new(PostgresClientDrogonHeaderGenerator::new(config))
+            return Box::new(PostgresClientDrogonHeaderGenerator::new(config, indent))
         } else if config.database_client_library() == "pqxx" {
-            return Box::new(PostgresClientPqxxHeaderGenerator::new(config))
+            return Box::new(PostgresClientPqxxHeaderGenerator::new(config, indent))
         }
         panic!("unknown database client library {}", config.database_client_library());
     }
 
-    pub(crate) fn create_database_client_source_generator<'a>(config: &'a Config) -> Box<dyn DatabaseClientLibrarySourceGenerator + 'a> {
+    pub(crate) fn create_database_client_source_generator<'a>(config: &'a Config, indent: Rc<Indent>) -> Box<dyn DatabaseClientLibrarySourceGenerator + 'a> {
         if config.database_client_library() == "drogon" {
-            return Box::new(PostgresClientDrogonSourceGenerator::new(config))
+            return Box::new(PostgresClientDrogonSourceGenerator::new(config, indent))
         } else if config.database_client_library() == "pqxx" {
-            return Box::new(PostgresClientPqxxSourceGenerator::new(config))
+            return Box::new(PostgresClientPqxxSourceGenerator::new(config, indent))
         }
         panic!("unknown database client library {}", config.database_client_library());
     }
