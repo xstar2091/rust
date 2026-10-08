@@ -1,12 +1,9 @@
 use std::io::Write;
-use std::fs::File;
-use std::io::BufWriter;
 use std::rc::Rc;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::factory::Factory;
 use crate::generator::generator_trait::{DatabaseClientLibrarySourceGenerator, DatabaseColumnMeta, DatabaseCppTypeMapping};
 use crate::generator::indent::Indent;
-use crate::generator::postgres_generator::postgres_client_drogon_source_generator::PostgresClientDrogonSourceGenerator;
 
 pub(crate) struct PostgresClientPqxxSourceGenerator<'a> {
     formater: &'a FormaterConfig,

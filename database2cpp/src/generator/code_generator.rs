@@ -11,7 +11,7 @@ pub struct CodeGenerator<'a> {
 }
 
 impl<'a> CodeGenerator<'a> {
-    pub async fn new(config: &Config) -> CodeGenerator {
+    pub async fn new(config: &Config) -> CodeGenerator<'_> {
         let indent = Rc::new(Indent::new());
         CodeGenerator {
             database_reader: Factory::create_database_reader(config.database()).await,

@@ -1,6 +1,4 @@
 use std::io::Write;
-use std::fs::File;
-use std::io::BufWriter;
 use std::rc::Rc;
 use crate::config::{Config, FormaterConfig, ModelConfig};
 use crate::generator::factory::Factory;

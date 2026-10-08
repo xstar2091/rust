@@ -1,8 +1,5 @@
-use async_trait::async_trait;
 use database2cpp::config::Config;
 use database2cpp::config::ConfigError;
-use database2cpp::postgres;
-use database2cpp::generator;
 use database2cpp::generator::CodeGenerator;
 
 
