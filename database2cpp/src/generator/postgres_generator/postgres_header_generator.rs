@@ -35,7 +35,7 @@ impl<'a> PostgresHeaderGenerator<'a> {
     }
 
     fn create_head(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
-        writeln!(writer, r##"pragma once
+        writeln!(writer, r##"#pragma once
 
 #include <array>
 #include <bitset>
@@ -89,6 +89,7 @@ class {}
         for column in column_list {
             writeln!(writer, "{}index_{},", self.indent._2, column.column_name).expect(&self.error_message);
         }
+        writeln!(writer, "index_total_count,").expect(&self.error_message);
         writeln!(writer, "{}}};", self.indent._1).expect(&self.error_message);
         writeln!(writer, "{}std::bitset<index_total_count> bit_;\n", self.indent._1).expect(&self.error_message);
     }
@@ -108,7 +109,7 @@ class {}
 {0}{{"##, self.indent._1).expect(&self.error_message);
 
         for column in column_list {
-            writeln!(writer, "{0}static constexpr std::string_view {1} = \"{1}\"",
+            writeln!(writer, "{0}static constexpr std::string_view {1} = \"{1}\";",
                 self.indent._2, column.column_name
             ).expect(&self.error_message);
         }
@@ -227,9 +228,9 @@ class {}
 
     fn create_function(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
         writeln!(writer, r##"
-{0}SensorParamRow& SetValidColumns();
-{0}SensorParamRow& SetValidColumns(const std::initializer_list<int>& valid_columns);
-{0}SensorParamRow& SetInvalidColumns();"##, self.indent._1).expect(&self.error_message);
+{0}{1}& SetValidColumns();
+{0}{1}& SetValidColumns(const std::initializer_list<int>& valid_columns);
+{0}{1}& SetInvalidColumns();"##, self.indent._1, self.row_class_name).expect(&self.error_message);
         self.database_client_generator.create_from_database_row(writer);
         self.json_generator.create_from_json(&self.indent._1, writer);
         self.json_generator.create_to_json(&self.indent._1, writer);

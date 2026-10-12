@@ -3,18 +3,18 @@
         "type": "postgres",
         "host": "localhost",
         "port": 5432,
-        "username": "postgres",
-        "password": "CrCcSimclOUd.",
-        "database": "simcloud",
+        "username": "my_user_name",
+        "password": "my_pass_word",
+        "database": "my_data_base",
         "schema": "public",
         "table": [
-            "sensor_list",
-            "sensor_param"
+            "my_table_1",
+            "my_table_2"
         ]
     },
     "model": {
         "save_to_path": ".",
-        "namespace": "simcloud::utils"
+        "namespace": "ns1::ns2"
     },
     "json1": "jsoncpp",
     "json": "nlohmann",

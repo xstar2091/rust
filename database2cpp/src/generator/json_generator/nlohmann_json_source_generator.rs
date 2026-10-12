@@ -97,7 +97,7 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
             } else {
                 write!(writer, "{}else if ", self.indent._2).expect(&self.error_message);
             }
-            write!(writer, "(name == {0}) set_{0}", column.column_name).expect(&self.error_message);
+            write!(writer, "(name == \"{0}\") set_{0}", column.column_name).expect(&self.error_message);
             let cpp_type = self.type_mapping.database_to_cpp_type(&column.data_type);
             match cpp_type {
                 generator_trait::CppType::Bool => {
@@ -178,7 +178,7 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
 {2}{{"name", "{3}"}},
 {2}{{"value", {3}_}},
 {2}{{"desc", ""}},
-{2}{{"range", []}},
+{2}{{"range", nlohmann::json::array()}},
 {2}{{"type", "string"}},
 {2}{{"unit", ""}},
 {1}}});
@@ -191,7 +191,7 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
 {2}{{"name", "{3}"}},
 {2}{{"value", fmt::format("{{}}", {3}_)}},
 {2}{{"desc", ""}},
-{2}{{"range", []}},
+{2}{{"range", nlohmann::json::array()}},
 {2}{{"type", "double"}},
 {2}{{"unit", ""}},
 {1}}});

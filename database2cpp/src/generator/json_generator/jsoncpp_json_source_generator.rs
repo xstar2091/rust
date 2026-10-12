@@ -268,7 +268,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Bool => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(value == "true" || value == "1" || value == "on");
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -276,7 +276,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Int8 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<int8_t>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -284,7 +284,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UInt8 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<uint8_t>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -292,7 +292,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Int16 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<int16_t>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -300,7 +300,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UInt16 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<uint16_t>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -308,7 +308,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Int32 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<int32_t>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -316,7 +316,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UInt32 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<uint32_t>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -324,7 +324,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Int64 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtoll(value.c_str(), nullptr, 10));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -332,7 +332,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UInt64 => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtoul(value.c_str(), nullptr, 10));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -340,7 +340,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Float => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtof(value.c_str(), nullptr));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -348,7 +348,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Double => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtod(value.c_str(), nullptr));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -356,7 +356,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::String => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(value);
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -364,7 +364,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Char => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<char>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -372,7 +372,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UnsignedChar => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<unsigned char>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -380,7 +380,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Short => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<short>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -388,7 +388,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UnsignedShort => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<unsigned short>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -396,7 +396,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Int => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<int>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -404,7 +404,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UnsignedInt => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<unsigned int>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -412,7 +412,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::Long => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(static_cast<long>(strtoll(value.c_str(), nullptr, 10)));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -420,7 +420,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UnsignedLong => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtoul(value.c_str(), nullptr, 10));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -428,7 +428,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::LongLong => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtoll(value.c_str(), nullptr, 10));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);
@@ -436,7 +436,7 @@ impl<'a> JsonSourceGenerator for JsoncppJsonSourceGenerator<'a> {
                 CppType::UnsignedLongLong => {
                     write!(
                         writer,
-                        r##"{0}{2}if (name == {3})
+                        r##"{0}{2}if (name == "{3}")
 {1}set_{3}(strtoul(value.c_str(), nullptr, 10));
 "##, self.indent._2, self.indent._3, if_else, column.column_name
                     ).expect(&self.error_message);

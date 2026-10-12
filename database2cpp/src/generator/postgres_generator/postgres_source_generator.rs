@@ -35,6 +35,7 @@ impl<'a> PostgresSourceGenerator<'a> {
     }
 
     pub(crate) fn create_head(&self, table_name: &str, writer: &mut std::io::BufWriter<std::fs::File>) {
+        // todo: 配置文件添加头文件路径
         writeln!(
             writer,
             r##"#include "{}.h"
@@ -118,6 +119,7 @@ namespace {}
                 },
             }
         }
+        writeln!(writer, "{0}return {{}};", self.indent._1).expect(&self.error_message);
         writeln!(writer, "}}\n").expect(&self.error_message);
     }
 
@@ -159,7 +161,7 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         self.json_generator.create_to_json(&self.row_class_name, column_list, &mut writer);
         self.create_table_class_add_row(&mut writer);
         self.create_table_class_clear(&mut writer);
-        self.json_generator.create_table_class_to_json(&self.row_class_name, table_name, &mut writer);
+        self.json_generator.create_table_class_to_json(&self.table_class_name, table_name, &mut writer);
         writeln!(writer, "}}").expect(&self.error_message);
     }
 }
