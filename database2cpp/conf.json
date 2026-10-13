@@ -14,7 +14,8 @@
     },
     "model": {
         "save_to_path": ".",
-        "namespace": "ns1::ns2"
+        "namespace": "ns1::ns2",
+        "header_dir": "/my/path/to/save/header"
     },
     "json1": "jsoncpp",
     "json": "nlohmann",

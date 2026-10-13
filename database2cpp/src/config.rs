@@ -37,6 +37,7 @@ pub struct DatabaseConfig {
 pub struct ModelConfig {
     save_to_path: String,
     namespace: String,
+    header_dir: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -137,6 +138,10 @@ impl ModelConfig {
 
     pub fn namespace(&self) -> &str {
         &self.namespace
+    }
+    
+    pub fn header_dir(&self) -> &str {
+        &self.header_dir
     }
 }
 

@@ -35,10 +35,9 @@ impl<'a> PostgresSourceGenerator<'a> {
     }
 
     pub(crate) fn create_head(&self, table_name: &str, writer: &mut std::io::BufWriter<std::fs::File>) {
-        // todo: 配置文件添加头文件路径
         writeln!(
             writer,
-            r##"#include "{}.h"
+            r##"#include "{}{}.h"
 
 #include <fmt/format.h>
 {}
@@ -46,6 +45,7 @@ impl<'a> PostgresSourceGenerator<'a> {
 namespace {}
 {{
 "##,
+            self.config_model.header_dir(),
             table_name,
             self.database_client_generator.library_include(),
             self.config_model.namespace()
