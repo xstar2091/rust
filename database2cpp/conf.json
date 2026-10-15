@@ -19,6 +19,10 @@
     },
     "json1": "jsoncpp",
     "json": "nlohmann",
+    "json_generator": {
+        "from_json": "key-value",
+        "to_json": "key-value"
+    },
     "database_client_library1": "drogon",
     "database_client_library": "pqxx",
     "formater": {

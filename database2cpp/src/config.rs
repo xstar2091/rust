@@ -14,6 +14,7 @@ pub struct Config {
     model: ModelConfig,
     // 可取值：jsoncpp, nlohmann
     json: String,
+    json_generator: JsonGeneratorConfig,
     // 可取值：drogon, pqxx
     database_client_library: String,
     formater: FormaterConfig,
@@ -38,6 +39,14 @@ pub struct ModelConfig {
     save_to_path: String,
     namespace: String,
     header_dir: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct JsonGeneratorConfig {
+    #[serde(rename = "from_json")]
+    conf_from_json: String,  // 可取值：key-value, param-array, both
+    #[serde(rename = "to_json")]
+    conf_to_json: String,    // 可取值：key-value, param-array, both
 }
 
 #[derive(Deserialize, Debug)]
@@ -70,6 +79,10 @@ impl Config {
     
     pub fn json(&self) -> &str {
         &self.json
+    }
+
+    pub fn json_generator(&self) -> &JsonGeneratorConfig {
+        &self.json_generator
     }
 
     pub fn database_client_library(&self) -> &str { &self.database_client_library }
@@ -142,6 +155,40 @@ impl ModelConfig {
     
     pub fn header_dir(&self) -> &str {
         &self.header_dir
+    }
+}
+
+impl JsonGeneratorConfig {
+    pub fn conf_from_json(&self) -> &str {
+        &self.conf_from_json
+    }
+    
+    pub fn conf_to_json(&self) -> &str {
+        &self.conf_to_json
+    }
+    
+    pub fn is_from_json_key_value(&self) -> bool {
+        &self.conf_from_json == "key-value"
+    }
+    
+    pub fn is_from_json_param_array(&self) -> bool {
+        &self.conf_from_json == "param-array"
+    }
+
+    pub fn is_from_json_both(&self) -> bool {
+        &self.conf_from_json == "both"
+    }
+
+    pub fn is_to_json_key_value(&self) -> bool {
+        &self.conf_to_json == "key-value"
+    }
+
+    pub fn is_to_json_param_array(&self) -> bool {
+        &self.conf_to_json == "param-array"
+    }
+
+    pub fn is_to_json_both(&self) -> bool {
+        &self.conf_to_json == "both"
     }
 }
 

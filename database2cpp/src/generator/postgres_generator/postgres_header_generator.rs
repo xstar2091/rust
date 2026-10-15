@@ -89,7 +89,7 @@ class {}
         for column in column_list {
             writeln!(writer, "{}index_{},", self.indent._2, column.column_name).expect(&self.error_message);
         }
-        writeln!(writer, "index_total_count,").expect(&self.error_message);
+        writeln!(writer, "{}index_total_count,", self.indent._2).expect(&self.error_message);
         writeln!(writer, "{}}};", self.indent._1).expect(&self.error_message);
         writeln!(writer, "{}std::bitset<index_total_count> bit_;\n", self.indent._1).expect(&self.error_message);
     }
