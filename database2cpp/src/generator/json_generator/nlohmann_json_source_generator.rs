@@ -72,6 +72,7 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
                     }
                 }
             }
+            writeln!(writer, "").expect(&self.error_message);
         }
         if self.config.json_generator().is_from_json_param_array() || self.config.json_generator().is_from_json_both() {
             write!(writer, r##"

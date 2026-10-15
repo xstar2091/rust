@@ -104,6 +104,19 @@ class {}
 "##, self.indent._1, self.row_class_name).expect(&self.error_message);
     }
 
+    fn create_index_struct(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"{0}struct Index
+{0}{{"##, self.indent._1).expect(&self.error_message);
+
+        for column in column_list {
+            writeln!(writer, "{0}static constexpr int {1} = index_{1};",
+                     self.indent._2, column.column_name
+            ).expect(&self.error_message);
+        }
+
+        writeln!(writer, "{}}};\n", self.indent._1).expect(&self.error_message);
+    }
+
     fn create_column_struct(&self, column_list: &[DatabaseColumnMeta], writer: &mut std::io::BufWriter<std::fs::File>) {
         writeln!(writer, r##"{0}struct Column
 {0}{{"##, self.indent._1).expect(&self.error_message);
@@ -281,6 +294,7 @@ impl<'a> HeaderGenerator for PostgresHeaderGenerator<'a> {
         self.create_column_index(column_list, &mut writer);
         writeln!(writer, "public:").expect(&self.error_message);
         self.create_ctor(&mut writer);
+        self.create_index_struct(column_list, &mut writer);
         self.create_column_struct(column_list, &mut writer);
         writeln!(writer, "{}static constexpr std::string_view table_name = \"{}\";",
             self.indent._1, table_name
