@@ -113,6 +113,7 @@ class {}
                      self.indent._2, column.column_name
             ).expect(&self.error_message);
         }
+        writeln!(writer, "{0}static constexpr int column_total_count = index_total_count;", self.indent._2).expect(&self.error_message);
 
         writeln!(writer, "{}}};\n", self.indent._1).expect(&self.error_message);
     }
