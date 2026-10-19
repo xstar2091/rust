@@ -1,0 +1,41 @@
+{
+    "host": "http://127.0.0.1:10080",
+    "url_path": {
+        "scene_list": "/p1",
+        "scene_tag_create": "/p2",
+        "scene_tag_update": "/p3",
+        "scene_tag_with_id": "/p4",
+        "scene_tag_list": "/p5",
+        "scene_tag_relate": "/p6",
+        "from_scene_to_tag": "/p7",
+        "from_tag_to_scene": "/p8"
+    },
+    "database_connection_string": "host=localhost user=postgres dbname=my_database password=my_password",
+    "scene_list": [
+        {"id": 1, "name": "test-data-1"}, {"id": 2, "name": "test-data-2"}, {"id": 3, "name": "test-data-3"},
+        {"id": 4, "name": "test-data-4"}, {"id": 5, "name": "test-data-5"}, {"id": 6, "name": "test-data-6"},
+        {"id": 7, "name": "test-data-7"}, {"id": 8, "name": "test-data-8"}, {"id": 9, "name": "test-data-9"}
+    ],
+    "tag_list": [
+        {"id": 1, "name": "1", "description": "11"},
+        {"id": 2, "name": "2", "description": "22"},
+        {"id": 3, "name": "3", "description": "33"},
+        {"id": 4, "name": "4", "description": "44"},
+        {"id": 5, "name": "5", "description": "55"},
+        {"id": 6, "name": "6", "description": ""},
+        {"id": 7, "name": "7", "description": ""},
+        {"id": 8, "name": "8", "description": ""},
+        {"id": 9, "name": "9", "description": ""}
+    ],
+    "scene_tag_relation_list": [
+        {"scene_id": 1, "tag_id_list": [1, 2, 3, 6]},
+        {"scene_id": 2, "tag_id_list": [3, 4, 5, 7]},
+        {"scene_id": 3, "tag_id_list": [6, 7]},
+        {"scene_id": 4, "tag_id_list": [6, 7, 9]},
+        {"scene_id": 5, "tag_id_list": [2, 4, 8]},
+        {"scene_id": 6, "tag_id_list": [1, 2, 3, 4, 5, 9]},
+        {"scene_id": 7, "tag_id_list": [8]},
+        {"scene_id": 8, "tag_id_list": [9]},
+        {"scene_id": 9, "tag_id_list": [1, 5]}
+    ]
+}

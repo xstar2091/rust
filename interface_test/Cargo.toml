@@ -1,0 +1,12 @@
+[package]
+name = "interface_test"
+version = "0.1.0"
+edition = "2024"
+
+[dev-dependencies]
+anyhow = "1.0.104"
+reqwest = { version = "0.13.5", features = ["json", "query"] }  # 需要 json 时加上
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tokio = { version = "1.53.3", features = ["full"] }   # 需要宏和运行时
+tokio-postgres = "0.7.18"
