@@ -28,6 +28,6 @@ impl<'a> JsonHeaderGenerator for JsoncppJsonHeaderGenerator<'a> {
     }
 
     fn create_to_json(&self, indent: &str, writer: &mut BufWriter<File>) {
-        writeln!(writer, "{0}void ToJson(Json::Value& root) const;", indent).expect("write header file failed")
+        writeln!(writer, "{0}[[nodiscard]] Json::Value ToJson() const;", indent).expect("write header file failed")
     }
 }

@@ -244,7 +244,9 @@ class {}
         writeln!(writer, r##"
 {0}{1}& SetValidColumns();
 {0}{1}& SetValidColumns(const std::initializer_list<int>& valid_columns);
-{0}{1}& SetInvalidColumns();"##, self.indent._1, self.row_class_name).expect(&self.error_message);
+{0}{1}& SetInvalidColumns();
+{0}{1}& SetInvalidColumns(const std::initializer_list<int>& valid_columns);"##,
+                 self.indent._1, self.row_class_name).expect(&self.error_message);
         self.database_client_generator.create_from_database_row(writer);
         self.json_generator.create_from_json(&self.indent._1, writer);
         self.json_generator.create_to_json(&self.indent._1, writer);

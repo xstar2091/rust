@@ -84,13 +84,25 @@ namespace {}
 "##, self.indent._1, self.indent._2, self.row_class_name).expect(&self.error_message);
     }
 
-    pub(crate) fn create_set_invalid_columns(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+    pub(crate) fn create_set_invalid_columns_1(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
         writeln!(writer, r##"{1}& {1}::SetInvalidColumns()
 {{
 {0}bit_.reset();
 {0}return *this;
 }}
 "##, self.indent._1, self.row_class_name).expect(&self.error_message);
+    }
+
+    pub(crate) fn create_set_invalid_columns_2(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
+        writeln!(writer, r##"{2}& {2}::SetInvalidColumns(const std::initializer_list<int>& valid_columns)
+{{
+{0}for (const int index : valid_columns)
+{0}{{
+{1}bit_.reset(index);
+{0}}}
+{0}return *this;
+}}
+"##, self.indent._1, self.indent._2, self.row_class_name).expect(&self.error_message);
     }
 
     pub(crate) fn create_string(
@@ -156,7 +168,8 @@ impl SourceGenerator for PostgresSourceGenerator<'_> {
         self.json_generator.create_from_json(&self.row_class_name, column_list, &mut writer);
         self.create_set_valid_columns_1(&mut writer);
         self.create_set_valid_columns_2(&mut writer);
-        self.create_set_invalid_columns(&mut writer);
+        self.create_set_invalid_columns_1(&mut writer);
+        self.create_set_invalid_columns_2(&mut writer);
         self.create_string(column_list, &mut writer);
         self.json_generator.create_to_json(&self.row_class_name, column_list, &mut writer);
         self.create_table_class_add_row(&mut writer);

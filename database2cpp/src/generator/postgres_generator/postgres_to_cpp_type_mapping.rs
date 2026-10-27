@@ -19,6 +19,7 @@ impl PostgresToCppTypeMapping {
             ("boolean".to_string(), "bool".to_string()),
             ("char(n)".to_string(), "std::string".to_string()),
             ("varchar(n)".to_string(), "std::string".to_string()),
+            ("character varying".to_string(), "std::string".to_string()),
             ("text".to_string(), "std::string".to_string()),
             ("bytea".to_string(), "std::string".to_string()),
             ("date".to_string(), "std::string".to_string()),

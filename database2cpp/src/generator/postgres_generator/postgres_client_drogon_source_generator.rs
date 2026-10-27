@@ -39,7 +39,7 @@ impl<'a> DatabaseClientLibrarySourceGenerator for PostgresClientDrogonSourceGene
         column_list: &[DatabaseColumnMeta],
         writer: &mut std::io::BufWriter<std::fs::File>
     ) {
-        writeln!(writer, r##"void {1}::FromDatabaseRow(const pqxx::row& row)
+        writeln!(writer, r##"void {1}::FromDatabaseRow(const drogon::orm::Row& row)
 {{
 {0}if (bit_.none())
 {0}{{
