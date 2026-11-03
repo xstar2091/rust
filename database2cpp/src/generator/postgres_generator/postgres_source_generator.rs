@@ -9,6 +9,7 @@ use crate::generator::indent::Indent;
 
 pub(crate) struct PostgresSourceGenerator<'a> {
     config_formater: &'a FormaterConfig,
+    config_format_library: &'a str,
     config_model: &'a ModelConfig,
     indent : Rc<Indent>,
     json_generator: Box<dyn JsonSourceGenerator + 'a>,
@@ -23,6 +24,7 @@ impl<'a> PostgresSourceGenerator<'a> {
     pub(crate) fn new(config: &'a Config, indent: Rc<Indent>) -> Self {
         Self {
             config_formater: config.formater(),
+            config_format_library: config.format_library(),
             config_model: config.model(),
             indent: indent.clone(),
             json_generator: Factory::create_json_source_generator(config),
@@ -35,18 +37,24 @@ impl<'a> PostgresSourceGenerator<'a> {
     }
 
     pub(crate) fn create_head(&self, table_name: &str, writer: &mut std::io::BufWriter<std::fs::File>) {
+        let mut format_include: &str = "";
+        if self.config_format_library == "std" {
+            format_include = "#include <format>"
+        } else if self.config_format_library == "fmt" {
+            format_include = "#include <fmt/format.h>"
+        }
         writeln!(
             writer,
             r##"#include "{}{}.h"
 
-#include <fmt/format.h>
+{}
 {}
 
 namespace {}
 {{
 "##,
-            self.config_model.header_dir(),
-            table_name,
+            self.config_model.header_dir(), table_name,
+            format_include,
             self.database_client_generator.library_include(),
             self.config_model.namespace()
         ).expect(&self.error_message);
@@ -125,8 +133,8 @@ namespace {}
                 _ => {
                     writeln!(
                         writer,
-                        "{0}if (index == index_{1}) return fmt::format(\"{{}}\", {1}_);",
-                        self.indent._1, column.column_name
+                        "{0}if (index == index_{1}) return {2}::format(\"{{}}\", {1}_);",
+                        self.indent._1, column.column_name, self.config_format_library
                     ).expect(&self.error_message);
                 },
             }

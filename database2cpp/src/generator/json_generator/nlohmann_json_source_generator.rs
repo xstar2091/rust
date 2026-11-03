@@ -189,17 +189,22 @@ impl<'a> JsonSourceGenerator for NlohmannJsonSourceGenerator<'a> {
 {0}}}"##, self.indent._1, self.indent._2, self.indent._3, column.column_name).expect(&self.error_message);
                     },
                     _ => {
-                        writeln!(writer, r##"{0}if (has_{3}())
+                        writeln!(
+                            writer,
+                            r##"{0}if (has_{3}())
 {0}{{
 {1}param.push_back({{
 {2}{{"name", "{3}"}},
-{2}{{"value", fmt::format("{{}}", {3}_)}},
+{2}{{"value", {4}::format("{{}}", {3}_)}},
 {2}{{"desc", ""}},
 {2}{{"range", nlohmann::json::array()}},
 {2}{{"type", "double"}},
 {2}{{"unit", ""}},
 {1}}});
-{0}}}"##, self.indent._1, self.indent._2, self.indent._3, column.column_name).expect(&self.error_message);
+{0}}}"##,
+                            self.indent._1, self.indent._2, self.indent._3, column.column_name,
+                            self.config.format_library()
+                        ).expect(&self.error_message);
                     }
                 }
             }

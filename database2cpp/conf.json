@@ -25,6 +25,7 @@
     },
     "database_client_library1": "drogon",
     "database_client_library": "pqxx",
+    "format_library": "std",
     "formater": {
         "indent_char": " ",
         "indent_width": 4,

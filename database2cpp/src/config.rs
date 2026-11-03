@@ -17,6 +17,8 @@ pub struct Config {
     json_generator: JsonGeneratorConfig,
     // 可取值：drogon, pqxx
     database_client_library: String,
+    // 可取值：std, fmt
+    format_library: String,
     formater: FormaterConfig,
 }
 
@@ -86,6 +88,8 @@ impl Config {
     }
 
     pub fn database_client_library(&self) -> &str { &self.database_client_library }
+
+    pub fn format_library(&self) -> &str { &self.format_library }
     
     pub fn formater(&self) -> &FormaterConfig {
         &self.formater
