@@ -42,7 +42,6 @@ impl<'a> PostgresHeaderGenerator<'a> {
 #include <string>
 #include <vector>"##).expect(&self.error_message);
         self.json_generator.create_include(writer);
-        writeln!(writer, "#include \"simcommon/error_code.h\"").expect(&self.error_message);
         writeln!(writer, r##"
 {}
 
@@ -262,7 +261,6 @@ class {}
         writeln!(writer, r##"
 struct {2}
 {{
-{0}common::ErrorCode error_code;
 {0}std::vector<{1}> table;
 
 {0}{2}() = default;

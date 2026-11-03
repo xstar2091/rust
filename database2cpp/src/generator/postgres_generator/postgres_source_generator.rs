@@ -147,7 +147,6 @@ namespace {}
     pub(crate) fn create_table_class_clear(&self, writer: &mut std::io::BufWriter<std::fs::File>) {
         writeln!(writer, r##"void {1}::Clear()
 {{
-{0}error_code = common::ErrorCode();
 {0}table.clear();
 }}
 "##, self.indent._1, self.table_class_name).expect(&self.error_message);
