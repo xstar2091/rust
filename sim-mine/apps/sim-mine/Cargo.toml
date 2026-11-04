@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 
 [lib]
-name = "sim-mine-core"
+name = "sim_mine_core"
 
 [[bin]]
 name = "sim-mine"
