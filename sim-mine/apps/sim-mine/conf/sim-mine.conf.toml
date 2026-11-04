@@ -1,0 +1,9 @@
+[database]
+name = "simcloud"
+user = "postgres"
+password = "CrCcSimclOUd."
+host = "127.0.0.1"
+port = 5432
+
+[server]
+port = 10080
