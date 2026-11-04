@@ -1,0 +1,12 @@
+[package]
+name = "sim-mine"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+name = "sim-mine-core"
+
+[[bin]]
+name = "sim-mine"
+path = "src/main.rs"
