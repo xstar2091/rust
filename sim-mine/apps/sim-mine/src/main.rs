@@ -11,8 +11,8 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use sim_mine_core::config::Config;
 use sim_mine_core::http::{
     health_handler::health,
-    http_state::HttpState,
-    project_handler::project_list_get,
+    http_common::HttpState,
+    project_handler::*,
 };
 use std::sync::Arc;
 
@@ -57,6 +57,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .route("/v1/health", get(health))
         .route("/v1/{user_id}/project/list", get(project_list_get))
+        .route("/v1/param", get(project_param_default_get))
+        .route("/v1/carparam", get(project_car_param_default_get))
         .layer(trace_layer)
         .layer(PropagateRequestIdLayer::new(request_id_header.clone()))
         .layer(SetRequestIdLayer::new(request_id_header, MakeRequestUuid))
